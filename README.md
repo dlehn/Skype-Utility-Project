@@ -43,6 +43,6 @@ These values are:
 
 ## Who did it?
 
-This project is a combined effort of ![Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and myself (![David Lehn](http://blog.mountain-view.de "Portfolio")).
+This project is a combined effort of [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and myself ([David Lehn](http://blog.mountain-view.de "Portfolio")).
 
 We hope this will be of use to somebody. If not, well... at least you didn't pay for it, I guess.
