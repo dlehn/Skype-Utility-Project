@@ -5,7 +5,7 @@ Welcome to the Skype Utility Project!
 
 ## What is it?
 
-The Skype Utility Project is a plugin for *Skype for Windows Desktop*, adding some useful functionality the developers were too lazy to implement.
+The Skype Utility Project is a plugin for *Skype for Windows Desktop*, adding some useful functionality the original developers were too lazy to implement. (Please note that this plugin works **only** with the Windows Dekstop version of Skype, other platforms are not supported.)
 
 Features as of now are:
 - Enable/Disable text formatting: The latest Skype version started automatically formatting sent messages based on some special characters (e.g. \*bold\* or ~strike~) which annoyed a lot of people (including us). You can now turn that of with just one click!
@@ -34,7 +34,7 @@ And that's everything you need to know!
 
 ## Advanced Options
 
-The Skype Utility Project stores its settings in the `%appdata%/Skype/` folder, in a text file named `sup.ini`. You can open this file in a text editor and manually change one or two settings not (yet) accessible via the application menu.
+The Skype Utility Project stores its settings in the `%appdata%\Skype\` folder, in a text file named `sup.ini`. You can open this file in a text editor and manually change one or two settings not (yet) accessible via the application menu.
 
 These values are:
 - Section `[config]`
