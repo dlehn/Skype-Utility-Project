@@ -94,11 +94,11 @@ namespace SUP
 
 		UINT flags = MF_STRING | (enableChatFormat ? MF_CHECKED : MF_UNCHECKED);
 
-		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, L"&Enable chat formatting");
+		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, L"&Allow Chat Formatting");
 
 		HMENU notifMenu = CreateMenu();
 		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)notifMenu,
-			L"Show &Notifications...");
+			L"Show &Notifications");
 
 		hDisplayMenu = CreateMenu();
 		AppendMenu(notifMenu, MF_STRING | MF_POPUP, (UINT_PTR)hDisplayMenu,
@@ -109,10 +109,10 @@ namespace SUP
 			L"At &Location");
 
 		flags = MF_STRING | MF_UNCHECKED;
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopLeft, L"Top Left");
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopRight, L"Top Right");
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomRight, L"Bottom Right");
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomLeft, L"Bottom Left");
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopLeft, L"&Top Left");
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopRight, L"T&op Right");
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomRight, L"Bottom &Right");
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomLeft, L"Bottom &Left");
 
 		HMENU creditsMenu = CreateMenu();
 		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu,
