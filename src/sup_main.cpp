@@ -68,7 +68,7 @@ namespace SUP
 
 	std::vector<std::wstring> displayNames;
 
-	HWND findWindoInProcess(const wchar_t* _wndClass, const wchar_t* _wndTitle)
+	HWND findWindowInProcess(const wchar_t* _wndClass, const wchar_t* _wndTitle)
 	{
 		DWORD procId = GetCurrentProcessId();
 		DWORD wndProcId = NULL;
@@ -83,6 +83,27 @@ namespace SUP
 			wndProcId = NULL;
 			GetWindowThreadProcessId(result, &wndProcId);
 		} while (wndProcId != procId);
+
+		return result;
+	}
+
+	// Returns the first visible child window of _parent matching the criteria. If no visible
+	// child windows are available, the first found child window will be returned. If no
+	// matching child windows were found at all, returns NULL.
+	HWND findVisibleChild(HWND _parent, const wchar_t* _wndClass, const wchar_t* _wndTitle)
+	{
+		HWND resultFirst = FindWindowEx(_parent, NULL, _wndClass, _wndTitle);
+		HWND result = resultFirst;
+		while (result != NULL && IsWindowVisible(result) == FALSE)
+		{
+			result = FindWindowEx(_parent, result, _wndClass, _wndTitle);
+
+			if (result == NULL)
+			{
+				result = resultFirst;
+				break;
+			}
+		}
 
 		return result;
 	}
@@ -230,11 +251,12 @@ namespace SUP
 		WritePrivateProfileString(L"config", L"enableChatFormat",
 			std::to_wstring(enableChatFormat ? 1 : 0).c_str(), iniPath.c_str());
 
-		HWND hWndChat = findWindoInProcess(L"TConversationForm", nullptr);
+		HWND hWndChat = findWindowInProcess(L"TConversationForm", nullptr);
 
 		if (hWndChat == NULL)
 		{
-			hWndChat = FindWindowEx(hWnd, NULL, L"TConversationForm", nullptr); //Combined view
+			// Combined View
+			hWndChat = findVisibleChild(hWnd, L"TConversationForm", nullptr);
 
 			if (hWndChat == NULL)
 			{
@@ -243,7 +265,7 @@ namespace SUP
 			}
 		}
 
-		HWND hWndControl = FindWindowEx(hWndChat, NULL, L"TChatEntryControl", nullptr);
+		HWND hWndControl = findVisibleChild(hWndChat, L"TChatEntryControl", nullptr);
 
 		if (hWndControl == NULL)
 		{
@@ -251,20 +273,7 @@ namespace SUP
 			return;
 		}
 
-		// Try to use active text control. If failed, use the first one.
-		HWND hWndTextFirst = FindWindowEx(hWndControl, NULL, L"TChatRichEdit", nullptr);
-		HWND hWndText = hWndTextFirst;
-		while (IsWindowVisible(hWndText) == FALSE)
-		{
-			hWndText = FindWindowEx(hWndControl, hWndText, L"TChatRichEdit", nullptr);
-
-			if (hWndText == NULL)
-			{
-				hWndText = hWndTextFirst;
-				break;
-			}
-		}
-
+		HWND hWndText = findVisibleChild(hWndControl, L"TChatRichEdit", nullptr);
 		if (hWndText == NULL)
 		{
 			resetRichEditShowHook();
@@ -405,7 +414,7 @@ namespace SUP
 		notifOffsetY = GetPrivateProfileInt(L"config", L"notifOffsetY", 0, iniPath.c_str());
 
 		while (hWnd == NULL)
-			hWnd = findWindoInProcess(L"tSkMainForm", nullptr);
+			hWnd = findWindowInProcess(L"tSkMainForm", nullptr);
 
 		oldWndProc = SetWindowLong(hWnd, GWL_WNDPROC, (LONG)newWndProc);
 
