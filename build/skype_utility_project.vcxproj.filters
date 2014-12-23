@@ -19,10 +19,28 @@
     <ClCompile Include="..\src\sup_main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\sup_chat_commands.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sup_constants.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sup_window_util.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\res\sup_resource.h">
       <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\sup_chat_commands.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\sup_constants.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\sup_window_util.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

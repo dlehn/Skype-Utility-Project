@@ -85,6 +85,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\res\sup_resource.h" />
+    <ClInclude Include="..\src\sup_chat_commands.h" />
+    <ClInclude Include="..\src\sup_constants.h" />
+    <ClInclude Include="..\src\sup_window_util.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\res\skype_utility_project.rc" />
@@ -93,7 +96,10 @@
     <None Include="exports.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\sup_chat_commands.cpp" />
+    <ClCompile Include="..\src\sup_constants.cpp" />
     <ClCompile Include="..\src\sup_main.cpp" />
+    <ClCompile Include="..\src\sup_window_util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

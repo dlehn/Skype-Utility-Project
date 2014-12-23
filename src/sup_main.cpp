@@ -21,8 +21,11 @@
 #include <vector>
 #include <map>
 #include <shlobj.h>
+#include <Shlwapi.h>
 
-#include "Shlwapi.h"
+#include "sup_constants.h"
+#include "sup_chat_commands.h"
+#include "sup_window_util.h"
 
 #pragma comment(lib, "Shlwapi.lib")
 #pragma pack(1)
@@ -41,26 +44,19 @@ namespace SUP
 	HINSTANCE hLib = 0;
 	FARPROC p[14] = {0};
 
-	DWORD hookTreadId = NULL;
 	HWND hWnd = NULL;
 	LONG oldWndProc;
 	HMENU hMenu = NULL;
-	HWINEVENTHOOK hRichEditShowHook = NULL;
 
 	HMENU hUtilMenu = NULL;
 	HMENU hDisplayMenu = NULL;
 	HMENU hPosMenu = NULL;
-
-#define ID_ENABLE_CHAT_FORMAT 2000
-#define ID_SET_NOTIFICATION_DISPLAY 2100
-#define ID_SET_NOTIFICATION_POS 2200
-#define ID_SHOW_CREDITS_MOE 2300
-#define ID_SHOW_CREDITS_DAVE 2301
 	
-#define WM_REGISTER_SHOW_HOOK WM_APP - 1
+	ChatCommandHandler commandHandler;
 
 	std::wstring iniPath;
 	bool enableChatFormat = true;
+	bool hideAds = true;
 	ScreenCorner notifCorner = BottomRight;
 	std::wstring notifDisplay = L"";
 	int notifOffsetX = 0;
@@ -68,54 +64,14 @@ namespace SUP
 
 	std::vector<std::wstring> displayNames;
 
-	HWND findWindowInProcess(const wchar_t* _wndClass, const wchar_t* _wndTitle)
-	{
-		DWORD procId = GetCurrentProcessId();
-		DWORD wndProcId = NULL;
-		HWND result = NULL;
-		do
-		{
-			result = FindWindowEx(NULL, result, _wndClass, _wndTitle);
-
-			if (result == NULL)
-				break;
-
-			wndProcId = NULL;
-			GetWindowThreadProcessId(result, &wndProcId);
-		} while (wndProcId != procId);
-
-		return result;
-	}
-
-	// Returns the first visible child window of _parent matching the criteria. If no visible
-	// child windows are available, the first found child window will be returned. If no
-	// matching child windows were found at all, returns NULL.
-	HWND findVisibleChild(HWND _parent, const wchar_t* _wndClass, const wchar_t* _wndTitle)
-	{
-		HWND resultFirst = FindWindowEx(_parent, NULL, _wndClass, _wndTitle);
-		HWND result = resultFirst;
-		while (result != NULL && IsWindowVisible(result) == FALSE)
-		{
-			result = FindWindowEx(_parent, result, _wndClass, _wndTitle);
-
-			if (result == NULL)
-			{
-				result = resultFirst;
-				break;
-			}
-		}
-
-		return result;
-	}
-
 	void createMenus(HMENU _parent)
 	{
 		hUtilMenu = CreateMenu();
 		AppendMenu(_parent, MF_STRING | MF_POPUP, (UINT_PTR)hUtilMenu, L"&Util");
 
-		UINT flags = MF_STRING | (enableChatFormat ? MF_CHECKED : MF_UNCHECKED);
-
+		UINT flags = MF_STRING | MF_UNCHECKED;
 		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, L"&Allow Chat Formatting");
+		AppendMenu(hUtilMenu, flags, ID_HIDE_ADS, L"&Hide Ads");
 
 		HMENU notifMenu = CreateMenu();
 		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)notifMenu,
@@ -129,7 +85,7 @@ namespace SUP
 		AppendMenu(notifMenu, MF_STRING | MF_POPUP, (UINT_PTR)hPosMenu,
 			L"At &Location");
 
-		flags = MF_STRING | MF_UNCHECKED;
+		
 		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopLeft, L"&Top Left");
 		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopRight, L"T&op Right");
 		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomRight, L"Bottom &Right");
@@ -140,6 +96,14 @@ namespace SUP
 			L"&Credits");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_DAVE, L"&David Lehn");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_MOE, L"&Moritz Kretz");
+	}
+
+	void updateUtilMenu()
+	{
+		CheckMenuItem(hUtilMenu, ID_ENABLE_CHAT_FORMAT,
+			enableChatFormat ? MF_CHECKED : MF_UNCHECKED);
+		CheckMenuItem(hUtilMenu, ID_HIDE_ADS,
+			hideAds ? MF_CHECKED : MF_UNCHECKED);
 	}
 
 	void updatePosMenu()
@@ -220,67 +184,15 @@ namespace SUP
 		return result;
 	}
 
-	void resetRichEditShowHook()
-	{
-		PostThreadMessage(hookTreadId, WM_REGISTER_SHOW_HOOK, 42, 42);
-	}
-
-	void applyChatFormat(HWND _hChatRichEdit)
-	{
-		wchar_t buffer[8192];
-		GetWindowText(_hChatRichEdit, buffer, 8192);
-
-		if (enableChatFormat)
-			SetWindowText(_hChatRichEdit, L"/setupkey *Lib/Conversation/EnableWiki 1");
-		else
-			SetWindowText(_hChatRichEdit, L"/setupkey *Lib/Conversation/EnableWiki 0");
-
-		SendMessage(_hChatRichEdit, WM_KEYDOWN, VK_RETURN, 0);
-		SendMessage(_hChatRichEdit, WM_KEYUP, VK_RETURN, 0);
-
-		SetWindowText(_hChatRichEdit, buffer);
-	}
-
 	void chatFormatChanged()
 	{
-		if (enableChatFormat)
-			CheckMenuItem(hUtilMenu, 0, MF_CHECKED | MF_BYPOSITION);
-		else
-			CheckMenuItem(hUtilMenu, 0, MF_UNCHECKED | MF_BYPOSITION);
-
 		WritePrivateProfileString(L"config", L"enableChatFormat",
 			std::to_wstring(enableChatFormat ? 1 : 0).c_str(), iniPath.c_str());
 
-		HWND hWndChat = findWindowInProcess(L"TConversationForm", nullptr);
+		std::wstring cmd = L"/setupkey *Lib/Conversation/EnableWiki ";
+		cmd += enableChatFormat ? L'1' : L'0';
 
-		if (hWndChat == NULL)
-		{
-			// Combined View
-			hWndChat = findVisibleChild(hWnd, L"TConversationForm", nullptr);
-
-			if (hWndChat == NULL)
-			{
-				resetRichEditShowHook();
-				return;
-			}
-		}
-
-		HWND hWndControl = findVisibleChild(hWndChat, L"TChatEntryControl", nullptr);
-
-		if (hWndControl == NULL)
-		{
-			resetRichEditShowHook();
-			return;
-		}
-
-		HWND hWndText = findVisibleChild(hWndControl, L"TChatRichEdit", nullptr);
-		if (hWndText == NULL)
-		{
-			resetRichEditShowHook();
-			return;
-		}
-
-		applyChatFormat(hWndText);
+		commandHandler.queueCommand(cmd, L"changeChatFormat", true);
 	}
 
 	LRESULT CALLBACK newWndProc(HWND _hwnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
@@ -300,7 +212,9 @@ namespace SUP
 			break;
 		}
 		case WM_INITMENUPOPUP:
-			if ((HMENU)_wParam == hPosMenu)
+			if ((HMENU)_wParam == hUtilMenu)
+				updateUtilMenu();
+			else if ((HMENU)_wParam == hPosMenu)
 				updatePosMenu();
 			else if ((HMENU)_wParam == hDisplayMenu)
 				updateDisplayMenu();
@@ -310,6 +224,12 @@ namespace SUP
 			{
 				enableChatFormat = !enableChatFormat;
 				chatFormatChanged();
+			}
+			else if (_wParam == ID_HIDE_ADS)
+			{
+				hideAds = !hideAds;
+				WritePrivateProfileString(L"config", L"hideAds", hideAds ? L"1" : L"0",
+					iniPath.c_str());
 			}
 			else if (_wParam == ID_SHOW_CREDITS_DAVE)
 			{
@@ -348,35 +268,36 @@ namespace SUP
 		{
 		case EVENT_OBJECT_SHOW:
 		{
-			wchar_t buffer[MAX_CLASS_NAME] = {0};
-			GetClassName(_hwnd, buffer, MAX_CLASS_NAME);
-			std::wstring className = buffer;
+			wchar_t className[MAX_CLASS_NAME] = {0};
+			GetClassName(_hwnd, className, MAX_CLASS_NAME);
 
-			if (className == L"TChatRichEdit")
+			if (className == CLS_CHAT_RICH_EDIT)
 			{
-				// After this, we don't need this hook to be called anymore.
-				UnhookWinEvent(_hWinEventHook);
-				hRichEditShowHook = NULL;
-				// Once a chat edit field is available, we use it to set our value.
-				applyChatFormat(_hwnd);
+				commandHandler.executePendingCommands(_hwnd);
 			}
 			break;
 		}
 		case EVENT_OBJECT_LOCATIONCHANGE:
 		{
-			static const std::wstring trayAlertClass = L"TTrayAlert";
 			wchar_t className[MAX_CLASS_NAME] = {0};
 			GetClassName(_hwnd, className, MAX_CLASS_NAME);
 
-			if (className != trayAlertClass)
-				return;
+			if (className == CLS_TRAY_ALERT)
+			{
+				RECT rect;
+				if (!GetWindowRect(_hwnd, &rect))
+					return;
 
-			RECT rect;
-			if (!GetWindowRect(_hwnd, &rect))
-				return;
-
-			POINT pos = calcWindowPos(rect);
-			MoveWindow(_hwnd, pos.x, pos.y, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+				POINT pos = calcWindowPos(rect);
+				MoveWindow(_hwnd, pos.x, pos.y, rect.right - rect.left, rect.bottom - rect.top,
+					TRUE);
+			}
+			else if (hideAds && className == CLS_CHAT_BANNER)
+			{
+				RECT r;
+				GetWindowRect(_hwnd, &r);
+				SetWindowPos(_hwnd, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
+			}
 			break;
 		}
 		}
@@ -387,7 +308,10 @@ namespace SUP
 		wchar_t buffer[MAX_PATH];
 
 		DWORD procId = GetCurrentProcessId();
-		resetRichEditShowHook();
+		SetWinEventHook(EVENT_OBJECT_SHOW,
+			EVENT_OBJECT_SHOW, hInst,
+			notificationHook, procId, NULL,
+			WINEVENT_INCONTEXT | WINEVENT_SKIPOWNTHREAD);
 		SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE,
 			EVENT_OBJECT_LOCATIONCHANGE, hInst,
 			notificationHook, procId, NULL,
@@ -405,6 +329,8 @@ namespace SUP
 
 		enableChatFormat = GetPrivateProfileInt(L"config", L"enableChatFormat", 1,
 			iniPath.c_str()) != 0;
+		hideAds = GetPrivateProfileInt(L"config", L"hideAds", 0,
+			iniPath.c_str()) != 0;
 		notifCorner = (ScreenCorner)GetPrivateProfileInt(L"config", L"notifCorner", BottomRight,
 			iniPath.c_str());
 		GetPrivateProfileString(L"config", L"notifDisplay", L"", buffer, MAX_PATH,
@@ -418,24 +344,15 @@ namespace SUP
 
 		oldWndProc = SetWindowLong(hWnd, GWL_WNDPROC, (LONG)newWndProc);
 
+		commandHandler.setMainForm(hWnd);
+
+		chatFormatChanged();
+
 		MSG msg;
 		while (GetMessage(&msg, NULL, 0, 0))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-
-			switch (msg.message)
-			{
-			case WM_REGISTER_SHOW_HOOK:
-				if (hRichEditShowHook == NULL)
-				{
-					hRichEditShowHook = SetWinEventHook(EVENT_OBJECT_SHOW,
-						EVENT_OBJECT_SHOW, hInst,
-						notificationHook, procId, NULL,
-						WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNTHREAD);
-				}
-				break;
-			}
 		}
 
 		return TRUE;
@@ -474,7 +391,7 @@ BOOL WINAPI DllMain(HINSTANCE _hInst, DWORD _reason, LPVOID _reserved)
 		SUP::p[12] = GetProcAddress(SUP::hLib, "PSGPError");
 		SUP::p[13] = GetProcAddress(SUP::hLib, "PSGPSampleTexture");
 
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SUP::hook, 0, 0, &SUP::hookTreadId);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)SUP::hook, nullptr, 0, nullptr);
 	}
 	else if (_reason == DLL_PROCESS_DETACH)
 	{
