@@ -14,7 +14,7 @@ The most notable features are:
 - Change notification window positioning: Notification window positioning now works smoothly with multiple connected displays. You can, of course, also choose on which display and where on that display your notification windows are supposed to appear.
 - Hide Ads: Hide the advertisement banners above conversations. This will not affect Ads on the Skype "Home" page. After changing this setting, you may need to switch to a different conversation window in order for the changes to be applied.
 
-For a full list of features, check out the [feature description](#What-do-those-options-do) below. Interested in a feature that's not included yet? Send us a message! If it's possible, we'll integrate it.
+For a full list of features, check out the [feature description](#what-do-those-options-do) below. Interested in a feature that's not included yet? Send us a message! If it's possible, we'll integrate it.
 
 ## How do I get started?
 
