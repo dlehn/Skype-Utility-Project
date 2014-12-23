@@ -195,6 +195,67 @@ namespace SUP
 		commandHandler.queueCommand(cmd, L"changeChatFormat", true);
 	}
 
+	void hideAdsChanged()
+	{
+		WritePrivateProfileString(L"config", L"hideAds", hideAds ? L"1" : L"0",
+			iniPath.c_str());
+
+		if (!hideAds)
+			return;
+
+		RECT r;
+		HWND banner = NULL;
+		while (true)
+		{
+			banner = FindWindowEx(hWnd, banner, CLS_CHAT_BANNER.c_str(), nullptr);
+			if (!banner)
+				break;
+
+			GetWindowRect(banner, &r);
+			SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
+		}
+
+		// Combined view
+		HWND parent = NULL;
+		while (true)
+		{
+			parent = FindWindowEx(hWnd, parent, CLS_CONVERSATION_FORM.c_str(), nullptr);
+			if (!parent)
+				break;
+
+			banner = NULL;
+			while (true)
+			{
+				banner = FindWindowEx(hWnd, banner, CLS_CHAT_BANNER.c_str(), nullptr);
+				if (!banner)
+					break;
+
+				GetWindowRect(banner, &r);
+				SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
+			}
+		}
+
+		// Split view
+		parent = NULL;
+		while (true)
+		{
+			parent = findWindowInProcess(CLS_CONVERSATION_FORM.c_str(), nullptr, parent);
+			if (!parent)
+				break;
+
+			banner = NULL;
+			while (true)
+			{
+				banner = FindWindowEx(hWnd, banner, CLS_CHAT_BANNER.c_str(), nullptr);
+				if (!banner)
+					break;
+
+				GetWindowRect(banner, &r);
+				SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
+			}
+		}
+	}
+
 	LRESULT CALLBACK newWndProc(HWND _hwnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_message)
@@ -228,8 +289,7 @@ namespace SUP
 			else if (_wParam == ID_HIDE_ADS)
 			{
 				hideAds = !hideAds;
-				WritePrivateProfileString(L"config", L"hideAds", hideAds ? L"1" : L"0",
-					iniPath.c_str());
+				hideAdsChanged();
 			}
 			else if (_wParam == ID_SHOW_CREDITS_DAVE)
 			{
@@ -346,6 +406,7 @@ namespace SUP
 
 		commandHandler.setMainForm(hWnd);
 
+		hideAdsChanged();
 		chatFormatChanged();
 
 		MSG msg;
