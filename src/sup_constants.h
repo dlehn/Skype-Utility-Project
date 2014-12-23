@@ -19,7 +19,11 @@ namespace SUP
 #define ID_HIDE_ADS					2001
 #define ID_SET_NOTIFICATION_DISPLAY	2100
 #define ID_SET_NOTIFICATION_POS		2200
-#define ID_SHOW_CREDITS_MOE			2300
-#define ID_SHOW_CREDITS_DAVE		2301
+#define ID_SHOW_UPDATES				2300
+#define ID_SHOW_CREDITS_MOE			2301
+#define ID_SHOW_CREDITS_DAVE		2302
+
+// Version String
+#define SUP_VERSION L"1.1.0"
 
 #endif

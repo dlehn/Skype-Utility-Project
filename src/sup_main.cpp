@@ -70,8 +70,8 @@ namespace SUP
 		AppendMenu(_parent, MF_STRING | MF_POPUP, (UINT_PTR)hUtilMenu, L"&Util");
 
 		UINT flags = MF_STRING | MF_UNCHECKED;
-		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, L"&Allow Chat Formatting");
-		AppendMenu(hUtilMenu, flags, ID_HIDE_ADS, L"&Hide Ads");
+		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, L"Allow Chat &Formatting");
+		AppendMenu(hUtilMenu, flags, ID_HIDE_ADS, L"Hide &Ads");
 
 		HMENU notifMenu = CreateMenu();
 		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)notifMenu,
@@ -91,11 +91,18 @@ namespace SUP
 		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomRight, L"Bottom &Right");
 		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomLeft, L"Bottom &Left");
 
+		HMENU helpMenu = CreateMenu();
+		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)helpMenu,
+			L"&Help");
+
 		HMENU creditsMenu = CreateMenu();
-		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu,
+		AppendMenu(helpMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu,
 			L"&Credits");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_DAVE, L"&David Lehn");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_MOE, L"&Moritz Kretz");
+
+		AppendMenu(helpMenu, MF_STRING, ID_SHOW_UPDATES, L"Check for &New Version");
+		AppendMenu(helpMenu, MF_STRING | MF_DISABLED, 0, L"SUP Version: " SUP_VERSION);
 	}
 
 	void updateUtilMenu()
@@ -290,6 +297,12 @@ namespace SUP
 			{
 				hideAds = !hideAds;
 				hideAdsChanged();
+			}
+			else if (_wParam == ID_SHOW_UPDATES)
+			{
+				ShellExecute(NULL, L"open",
+					L"https://github.com/dlehn/Skype-Utility-Project/releases", nullptr, nullptr,
+					SW_SHOWNORMAL);
 			}
 			else if (_wParam == ID_SHOW_CREDITS_DAVE)
 			{
