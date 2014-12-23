@@ -49,6 +49,7 @@ namespace SUP
 	HMENU hMenu = NULL;
 
 	HMENU hUtilMenu = NULL;
+	HMENU hLayoutMenu = NULL;
 	HMENU hDisplayMenu = NULL;
 	HMENU hPosMenu = NULL;
 	
@@ -56,13 +57,17 @@ namespace SUP
 
 	std::wstring iniPath;
 	bool enableChatFormat = true;
-	bool hideAds = true;
+	bool hideAds = false;
+	bool hideAppToolbar = false;
+	bool hideIdentityPanel = false;
 	ScreenCorner notifCorner = BottomRight;
 	std::wstring notifDisplay = L"";
 	int notifOffsetX = 0;
 	int notifOffsetY = 0;
 
 	std::vector<std::wstring> displayNames;
+	int appToolbarHeight = 0;
+	int identityPanelHeight = 0;
 
 	void createMenus(HMENU _parent)
 	{
@@ -71,7 +76,13 @@ namespace SUP
 
 		UINT flags = MF_STRING | MF_UNCHECKED;
 		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, L"Allow Chat &Formatting");
-		AppendMenu(hUtilMenu, flags, ID_HIDE_ADS, L"Hide &Ads");
+
+		hLayoutMenu = CreateMenu();
+		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)hLayoutMenu,
+			L"&Layout");
+		AppendMenu(hLayoutMenu, flags, ID_HIDE_ADS, L"Hide &Ads");
+		AppendMenu(hLayoutMenu, flags, ID_HIDE_APP_TOOLBAR, L"Hide Home &Toolbar");
+		AppendMenu(hLayoutMenu, flags, ID_HIDE_IDENTITY_PANEL, L"Hide &Identity Panel");
 
 		HMENU notifMenu = CreateMenu();
 		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)notifMenu,
@@ -84,7 +95,6 @@ namespace SUP
 		hPosMenu = CreateMenu();
 		AppendMenu(notifMenu, MF_STRING | MF_POPUP, (UINT_PTR)hPosMenu,
 			L"At &Location");
-
 		
 		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopLeft, L"&Top Left");
 		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopRight, L"T&op Right");
@@ -109,8 +119,16 @@ namespace SUP
 	{
 		CheckMenuItem(hUtilMenu, ID_ENABLE_CHAT_FORMAT,
 			enableChatFormat ? MF_CHECKED : MF_UNCHECKED);
-		CheckMenuItem(hUtilMenu, ID_HIDE_ADS,
+	}
+
+	void updateLayoutMenu()
+	{
+		CheckMenuItem(hLayoutMenu, ID_HIDE_ADS,
 			hideAds ? MF_CHECKED : MF_UNCHECKED);
+		CheckMenuItem(hLayoutMenu, ID_HIDE_APP_TOOLBAR,
+			hideAppToolbar ? MF_CHECKED : MF_UNCHECKED);
+		CheckMenuItem(hLayoutMenu, ID_HIDE_IDENTITY_PANEL,
+			hideIdentityPanel ? MF_CHECKED : MF_UNCHECKED);
 	}
 
 	void updatePosMenu()
@@ -263,6 +281,62 @@ namespace SUP
 		}
 	}
 
+	void hideAppToolbarChanged()
+	{
+		WritePrivateProfileString(L"config", L"hideAppToolbar", hideAppToolbar ? L"1" : L"0",
+			iniPath.c_str());
+
+		HWND appToolbar = FindWindowEx(hWnd, NULL, CLS_APP_TOOLBAR.c_str(), nullptr);
+		if (!appToolbar)
+			return;
+
+		RECT r;
+		GetWindowRect(appToolbar, &r);
+
+		if (hideAppToolbar)
+		{
+			appToolbarHeight = r.bottom - r.top;
+			WritePrivateProfileString(L"config", L"appToolbarHeight",
+				std::to_wstring(appToolbarHeight).c_str(), iniPath.c_str());
+		}
+		else
+		{
+			appToolbarHeight = GetPrivateProfileInt(L"config", L"appToolbarHeight",
+				appToolbarHeight, iniPath.c_str());
+		}
+
+		SetWindowPos(appToolbar, NULL, 0, 0, r.right - r.left,
+			hideAppToolbar ? 0 : appToolbarHeight, SWP_NOMOVE | SWP_NOZORDER);
+	}
+
+	void hideIdentityPanelChanged()
+	{
+		WritePrivateProfileString(L"config", L"hideIdentityPanel", hideIdentityPanel ? L"1" : L"0",
+			iniPath.c_str());
+
+		HWND identityPanel = FindWindowEx(hWnd, NULL, CLS_IDENTITY_PANEL.c_str(), nullptr);
+		if (!identityPanel)
+			return;
+
+		RECT r;
+		GetWindowRect(identityPanel, &r);
+
+		if (hideIdentityPanel)
+		{
+			identityPanelHeight = r.bottom - r.top;
+			WritePrivateProfileString(L"config", L"identityPanelHeight",
+				std::to_wstring(identityPanelHeight).c_str(), iniPath.c_str());
+		}
+		else
+		{
+			identityPanelHeight = GetPrivateProfileInt(L"config", L"identityPanelHeight",
+				identityPanelHeight, iniPath.c_str());
+		}
+
+		SetWindowPos(identityPanel, NULL, 0, 0, r.right - r.left,
+			hideIdentityPanel ? 0 : identityPanelHeight, SWP_NOMOVE | SWP_NOZORDER);
+	}
+
 	LRESULT CALLBACK newWndProc(HWND _hwnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_message)
@@ -282,6 +356,8 @@ namespace SUP
 		case WM_INITMENUPOPUP:
 			if ((HMENU)_wParam == hUtilMenu)
 				updateUtilMenu();
+			else if ((HMENU)_wParam == hLayoutMenu)
+				updateLayoutMenu();
 			else if ((HMENU)_wParam == hPosMenu)
 				updatePosMenu();
 			else if ((HMENU)_wParam == hDisplayMenu)
@@ -297,6 +373,16 @@ namespace SUP
 			{
 				hideAds = !hideAds;
 				hideAdsChanged();
+			}
+			else if (_wParam == ID_HIDE_APP_TOOLBAR)
+			{
+				hideAppToolbar = !hideAppToolbar;
+				hideAppToolbarChanged();
+			}
+			else if (_wParam == ID_HIDE_IDENTITY_PANEL)
+			{
+				hideIdentityPanel = !hideIdentityPanel;
+				hideIdentityPanelChanged();
 			}
 			else if (_wParam == ID_SHOW_UPDATES)
 			{
@@ -365,7 +451,9 @@ namespace SUP
 				MoveWindow(_hwnd, pos.x, pos.y, rect.right - rect.left, rect.bottom - rect.top,
 					TRUE);
 			}
-			else if (hideAds && className == CLS_CHAT_BANNER)
+			else if ((hideAds && className == CLS_CHAT_BANNER)
+				|| (hideAppToolbar && className == CLS_APP_TOOLBAR)
+				|| (hideIdentityPanel && className == CLS_IDENTITY_PANEL))
 			{
 				RECT r;
 				GetWindowRect(_hwnd, &r);
@@ -403,6 +491,10 @@ namespace SUP
 		enableChatFormat = GetPrivateProfileInt(L"config", L"enableChatFormat", 1,
 			iniPath.c_str()) != 0;
 		hideAds = GetPrivateProfileInt(L"config", L"hideAds", 0,
+			iniPath.c_str()) != 0;
+		hideAppToolbar = GetPrivateProfileInt(L"config", L"hideAppToolbar", 0,
+			iniPath.c_str()) != 0;
+		hideIdentityPanel = GetPrivateProfileInt(L"config", L"hideIdentityPanel", 0,
 			iniPath.c_str()) != 0;
 		notifCorner = (ScreenCorner)GetPrivateProfileInt(L"config", L"notifCorner", BottomRight,
 			iniPath.c_str());
