@@ -81,7 +81,7 @@ namespace SUP
 		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)hLayoutMenu,
 			L"&Layout");
 		AppendMenu(hLayoutMenu, flags, ID_HIDE_ADS, L"Hide &Ads");
-		AppendMenu(hLayoutMenu, flags, ID_HIDE_APP_TOOLBAR, L"Hide Home &Toolbar");
+		AppendMenu(hLayoutMenu, flags, ID_HIDE_APP_TOOLBAR, L"Hide &Home Toolbar");
 		AppendMenu(hLayoutMenu, flags, ID_HIDE_IDENTITY_PANEL, L"Hide &Identity Panel");
 
 		HMENU notifMenu = CreateMenu();
@@ -105,14 +105,15 @@ namespace SUP
 		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)helpMenu,
 			L"&Help");
 
+		AppendMenu(helpMenu, MF_STRING, ID_SHOW_HELP, L"Show Online &Help");
+		AppendMenu(helpMenu, MF_STRING, ID_SHOW_UPDATES, L"Check for &New Version");
+		AppendMenu(helpMenu, MF_STRING | MF_DISABLED, 0, L"SUP Version: " SUP_VERSION);
+
 		HMENU creditsMenu = CreateMenu();
 		AppendMenu(helpMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu,
 			L"&Credits");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_DAVE, L"&David Lehn");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_MOE, L"&Moritz Kretz");
-
-		AppendMenu(helpMenu, MF_STRING, ID_SHOW_UPDATES, L"Check for &New Version");
-		AppendMenu(helpMenu, MF_STRING | MF_DISABLED, 0, L"SUP Version: " SUP_VERSION);
 	}
 
 	void updateUtilMenu()
@@ -383,6 +384,12 @@ namespace SUP
 			{
 				hideIdentityPanel = !hideIdentityPanel;
 				hideIdentityPanelChanged();
+			}
+			else if (_wParam == ID_SHOW_HELP)
+			{
+				ShellExecute(NULL, L"open",
+					L"https://github.com/dlehn/Skype-Utility-Project#what-do-those-options-do",
+					nullptr, nullptr, SW_SHOWNORMAL);
 			}
 			else if (_wParam == ID_SHOW_UPDATES)
 			{

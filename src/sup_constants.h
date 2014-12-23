@@ -27,9 +27,10 @@ namespace SUP
 
 #define ID_SET_NOTIFICATION_POS		2300
 
-#define ID_SHOW_UPDATES				2400
-#define ID_SHOW_CREDITS_MOE			2401
-#define ID_SHOW_CREDITS_DAVE		2402
+#define ID_SHOW_HELP				2400
+#define ID_SHOW_UPDATES				2401
+#define ID_SHOW_CREDITS_MOE			2402
+#define ID_SHOW_CREDITS_DAVE		2403
 
 // Version String
 #define SUP_VERSION L"1.2.0"
