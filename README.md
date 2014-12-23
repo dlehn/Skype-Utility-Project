@@ -35,6 +35,18 @@ The next time you start Skype, you will notice a new menu item called "Util" has
 From this menu, you can conveniently access all the configuration options and change them according to your preferences.
 And that's everything you need to know!
 
+## What do those options do?
+
+Below is a detailed list of descriptions of the individual menu items, grouped according to their positions in the `Util` menu.
+- *Allow Chat Formatting*: When enabled, special characters may be used to format text. E.g. \*bold\* or ~strike~.
+- *Layout*: Provides options to customize Skype's window layout. When changing any of these options, you need to switch to another conversation in order to make Skype's layout adapt to the changes.
+  - *Hide Ads*: Hides/shows the banner ads above chat conversations. Does not apply to ads displayed on the "Home" page.
+  - *Hide Home Toolbar*: Hides/shows the panel containing the "Home" and "Call phones" buttons.
+  - *Hide Identity Panel*: Hides/shows the panel containing your user name and current status. Hiding this is probably not very convenient, but may still help e.g. on a laptop display where space is scarce.
+- *Show Notifications*: Options to customize the location of notification popups.
+  - *On Display*: If you have multiple monitors, you can choose on which of the monitors you wish the notification popups to appear.
+  - *At Location*: Select in which corner of the selected monitor you want the notifications to appear. Default is bottom right, near your system tray. If you want the notifications to appear more towards the center of the screen, you can customize the exact positions by manually setting the values mentioned in the **Advanced Options** chapter below.
+
 ## Advanced Options
 
 The Skype Utility Project stores its settings in the `%appdata%\Skype\` folder, in a text file named `sup.ini`. You can open this file in a text editor and manually change one or two settings not (yet) accessible via the application menu.
@@ -43,6 +55,8 @@ These values are:
 - Section `[config]`
   - `notifOffsetX`: Horizontal offset of notification windows from the edge of the display in pixels.
   - `notifOffsetY`: Vertical offset of notification windows from the edge of the display in pixels.
+
+Note that in order to apply changes to these values, you will have to restart Skype.
 
 ## Who did it?
 
