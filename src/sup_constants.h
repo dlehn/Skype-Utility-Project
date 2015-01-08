@@ -39,6 +39,6 @@ namespace SUP
 #define LANG_DEFAULT				LANG_ENGLISH
 
 // Version String
-#define SUP_VERSION L"1.2.1"
+#define SUP_VERSION L"1.3.0"
 
 #endif
