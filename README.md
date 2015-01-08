@@ -46,6 +46,7 @@ Below is a detailed list of descriptions of the individual menu items, grouped a
 - *Show Notifications*: Options to customize the location of notification popups.
   - *On Display*: If you have multiple monitors, you can choose on which of the monitors you wish the notification popups to appear.
   - *At Location*: Select in which corner of the selected monitor you want the notifications to appear. Default is bottom right, near your system tray. If you want the notifications to appear more towards the center of the screen, you can customize the exact positions by manually setting the values mentioned in the [Advanced Options](#Advanced-Options) chapter below.
+- *Language*: Change *SUP*'s menu language. So far English, German and Russian are supported. (Feel free to contact us if you can provide translations to other languages or simply create a pull request.)
 
 ## Advanced Options
 
@@ -60,6 +61,7 @@ Note that in order to apply changes to these values, you will have to restart Sk
 
 ## Who did it?
 
-This project is a combined effort of [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and myself ([David Lehn](http://blog.mountain-view.de "Portfolio")).
+This project is a combined effort of [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and myself ([David Lehn](http://blog.mountain-view.de "Portfolio")).  
+Thanks a lot to [NDS](https://github.com/nestdimon) for creating the localization functionality and Russian translation!
 
 We hope this will be of use to somebody. If not, well... at least you didn't pay for it, I guess.
