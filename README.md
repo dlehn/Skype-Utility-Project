@@ -28,7 +28,7 @@ Alternatively, if you don't trust us, download the source code, open the include
 
 The Skype Utility Project consists of a single file called `d3d9.dll` which you need to place in your Skype installation directory, right next to the `Skype.exe` file (usually that will be in `C:\Program Files (x86)\Skype\Phone\`).
 
-The next time you start Skype, you will notice a new menu item called "Util" has appeared in the menu bar of Skype's contact list window.
+The next time you start Skype, you will notice a new menu item called "SUP" has appeared in the menu bar of Skype's contact list window.
 
 ![Screenshot](/res/menu.png?raw=true "Screenshot")
 
@@ -37,7 +37,7 @@ And that's everything you need to know!
 
 ## What do those options do?
 
-Below is a detailed list of descriptions of the individual menu items, grouped according to their positions in the `Util` menu.
+Below is a detailed list of descriptions of the individual menu items, grouped according to their positions in the `SUP` menu.
 - *Allow Chat Formatting*: When enabled, special characters may be used to format text. E.g. \*bold\* or ~strike~.
 - *Layout*: Provides options to customize Skype's window layout. When changing any of these options, you need to switch to another conversation in order to make Skype's layout adapt to the changes.
   - *Hide Ads*: Hides/shows the banner ads above chat conversations. Does not apply to ads displayed on the "Home" page.
@@ -46,7 +46,7 @@ Below is a detailed list of descriptions of the individual menu items, grouped a
 - *Show Notifications*: Options to customize the location of notification popups.
   - *On Display*: If you have multiple monitors, you can choose on which of the monitors you wish the notification popups to appear.
   - *At Location*: Select in which corner of the selected monitor you want the notifications to appear. Default is bottom right, near your system tray. If you want the notifications to appear more towards the center of the screen, you can customize the exact positions by manually setting the values mentioned in the [Advanced Options](#Advanced-Options) chapter below.
-- *Language*: Change *SUP*'s menu language. So far English, German and Russian are supported. (Feel free to contact us if you can provide translations to other languages or simply create a pull request.)
+- *Language*: Change `SUP`'s menu language. So far English, German and Russian are supported. (Feel free to contact us if you can provide translations to other languages or simply create a pull request.)
 
 ## Advanced Options
 
