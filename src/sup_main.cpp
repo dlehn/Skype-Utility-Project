@@ -72,27 +72,28 @@ namespace SUP
 	int appToolbarHeight = 0;
 	int identityPanelHeight = 0;
 
-	WORD LoadStringLang(UINT strID, LPTSTR destStr, WORD strLen)
+	WORD LoadStringLang(UINT _strID, LPTSTR _destStr, WORD _strLen)
 	{
-		HRSRC hrRes = FindResourceEx(hInst, RT_STRING, MAKEINTRESOURCE(1+(strID >> 4)), MAKELANGID(languageId, 0));
+		HRSRC hrRes = FindResourceEx(hInst, RT_STRING, MAKEINTRESOURCE(1+(_strID >> 4)),
+			MAKELANGID(languageId, 0));
 		LPCWSTR str = (LPCWSTR)LoadResource(hInst, hrRes);
 		
 		if (!str)
 			return 0;
 
-		for (WORD strPos=0; strPos < (strID & 0x000F); strPos++)
+		for (WORD strPos=0; strPos < (_strID & 0x000F); strPos++)
 			str+=*str+1;
 		
-		if (!strLen)
+		if (!_strLen)
 			return *str;
 		
-		if (!destStr)
+		if (!_destStr)
 			return 0;
 
-		int len = min(strLen, *str+1);
+		int len = min(_strLen, *str+1);
 
-		lstrcpyn(destStr, str+1, len);
-		destStr[len-1] = TEXT('\0');
+		lstrcpyn(_destStr, str+1, len);
+		_destStr[len-1] = TEXT('\0');
 
 		return len;
 	}
@@ -152,6 +153,9 @@ namespace SUP
 
 		LoadStringLang(IDS_MENU_LANGUAGE_RUSSIAN, (LPTSTR)&buffer, sizeof(buffer));
 		AppendMenu(hLanguageMenu, flags, ID_LANGUAGE_RUSSIAN, buffer);
+
+		LoadStringLang(IDS_MENU_LANGUAGE_GERMAN, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hLanguageMenu, flags, ID_LANGUAGE_GERMAN, buffer);
 
 		HMENU helpMenu = CreateMenu();
 		LoadStringLang(IDS_MENU_HELP, (LPTSTR)&buffer, sizeof(buffer));
@@ -235,7 +239,7 @@ namespace SUP
 		int items;
 		UINT sub;
 
-		if ((items = GetMenuItemCount(hLanguageMenu)) < 0)
+		if ((items = GetMenuItemCount(hLanguageMenu)) <= 0)
 			return;
 
 		for (int i = 0; i < items; i++)
