@@ -26,6 +26,7 @@
 #include "sup_constants.h"
 #include "sup_chat_commands.h"
 #include "sup_window_util.h"
+#include "../res/sup_resource.h"
 
 #pragma comment(lib, "Shlwapi.lib")
 #pragma pack(1)
@@ -50,6 +51,7 @@ namespace SUP
 
 	HMENU hUtilMenu = NULL;
 	HMENU hLayoutMenu = NULL;
+	HMENU hLanguageMenu = NULL;
 	HMENU hDisplayMenu = NULL;
 	HMENU hPosMenu = NULL;
 	
@@ -62,6 +64,7 @@ namespace SUP
 	bool hideIdentityPanel = false;
 	ScreenCorner notifCorner = BottomRight;
 	std::wstring notifDisplay = L"";
+	int languageId = 0;
 	int notifOffsetX = 0;
 	int notifOffsetY = 0;
 
@@ -69,49 +72,102 @@ namespace SUP
 	int appToolbarHeight = 0;
 	int identityPanelHeight = 0;
 
+	WORD LoadStringLang(UINT strID, LPTSTR destStr, WORD strLen)
+	{
+		HRSRC hrRes = FindResourceEx(hInst, RT_STRING, MAKEINTRESOURCE(1+(strID >> 4)), MAKELANGID(languageId, 0));
+		LPCWSTR str = (LPCWSTR)LoadResource(hInst, hrRes);
+		
+		if (!str)
+			return 0;
+
+		for (WORD strPos=0; strPos < (strID & 0x000F); strPos++)
+			str+=*str+1;
+		
+		if (!strLen)
+			return *str;
+		
+		if (!destStr)
+			return 0;
+
+		int len = min(strLen, *str+1);
+
+		lstrcpyn(destStr, str+1, len);
+		destStr[len-1] = TEXT('\0');
+
+		return len;
+	}
+
 	void createMenus(HMENU _parent)
 	{
+		WCHAR buffer[200];
+
 		hUtilMenu = CreateMenu();
-		AppendMenu(_parent, MF_STRING | MF_POPUP, (UINT_PTR)hUtilMenu, L"&Util");
+		LoadStringLang(IDS_MAINMENU, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(_parent, MF_STRING | MF_POPUP, (UINT_PTR)hUtilMenu, buffer);
 
 		UINT flags = MF_STRING | MF_UNCHECKED;
-		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, L"Allow Chat &Formatting");
+		LoadStringLang(IDS_MENU_ALLOW_CHAT_FORMATING, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, buffer);
 
 		hLayoutMenu = CreateMenu();
-		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)hLayoutMenu,
-			L"&Layout");
-		AppendMenu(hLayoutMenu, flags, ID_HIDE_ADS, L"Hide &Ads");
-		AppendMenu(hLayoutMenu, flags, ID_HIDE_APP_TOOLBAR, L"Hide &Home Toolbar");
-		AppendMenu(hLayoutMenu, flags, ID_HIDE_IDENTITY_PANEL, L"Hide &Identity Panel");
+		LoadStringLang(IDS_MENU_LAYOUT, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)hLayoutMenu, buffer);
+
+		LoadStringLang(IDS_MENU_HIDE_ADS, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hLayoutMenu, flags, ID_HIDE_ADS, buffer);
+
+		LoadStringLang(IDS_MENU_HIDE_APP_TOOLBAR, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hLayoutMenu, flags, ID_HIDE_APP_TOOLBAR, buffer);
+
+		LoadStringLang(IDS_MENU_HIDE_IDENTITY_PANEL, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hLayoutMenu, flags, ID_HIDE_IDENTITY_PANEL, buffer);
 
 		HMENU notifMenu = CreateMenu();
-		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)notifMenu,
-			L"Show &Notifications");
+		LoadStringLang(IDS_MENU_NOTIFICATION, (LPTSTR) &buffer, sizeof(buffer));
+		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)notifMenu, buffer);
 
 		hDisplayMenu = CreateMenu();
-		AppendMenu(notifMenu, MF_STRING | MF_POPUP, (UINT_PTR)hDisplayMenu,
-			L"On &Display");
+		LoadStringLang(IDS_MENU_ON_DISPLAY, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(notifMenu, MF_STRING | MF_POPUP, (UINT_PTR)hDisplayMenu, buffer);
 
 		hPosMenu = CreateMenu();
-		AppendMenu(notifMenu, MF_STRING | MF_POPUP, (UINT_PTR)hPosMenu,
-			L"At &Location");
+		LoadStringLang(IDS_MENU_AT_LOCATION, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(notifMenu, MF_STRING | MF_POPUP, (UINT_PTR)hPosMenu, buffer);
 		
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopLeft, L"&Top Left");
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopRight, L"T&op Right");
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomRight, L"Bottom &Right");
-		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomLeft, L"Bottom &Left");
+		LoadStringLang(IDS_MENU_NOTIFICATION_POS_TOPLEFT, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopLeft, buffer);
+		LoadStringLang(IDS_MENU_NOTIFICATION_POS_TOPRIGHT, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + TopRight, buffer);
+		LoadStringLang(IDS_MENU_NOTIFICATION_POS_BOTTOMRIGHT, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomRight, buffer);
+		LoadStringLang(IDS_MENU_NOTIFICATION_POS_BOTTOMLEFT, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hPosMenu, flags, ID_SET_NOTIFICATION_POS + BottomLeft, buffer);
+
+		hLanguageMenu = CreateMenu();
+		LoadStringLang(IDS_MENU_LANGUAGE, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)hLanguageMenu, buffer);
+
+		LoadStringLang(IDS_MENU_LANGUAGE_ENGLISH, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hLanguageMenu, flags, ID_LANGUAGE_ENGLISH, buffer);
+
+		LoadStringLang(IDS_MENU_LANGUAGE_RUSSIAN, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hLanguageMenu, flags, ID_LANGUAGE_RUSSIAN, buffer);
 
 		HMENU helpMenu = CreateMenu();
-		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)helpMenu,
-			L"&Help");
+		LoadStringLang(IDS_MENU_HELP, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hUtilMenu, MF_STRING | MF_POPUP, (UINT_PTR)helpMenu,	buffer);
 
-		AppendMenu(helpMenu, MF_STRING, ID_SHOW_HELP, L"Show Online &Help");
-		AppendMenu(helpMenu, MF_STRING, ID_SHOW_UPDATES, L"Check for &New Version");
-		AppendMenu(helpMenu, MF_STRING | MF_DISABLED, 0, L"SUP Version: " SUP_VERSION);
+		LoadStringLang(IDS_MENU_SHOW_HELP, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(helpMenu, MF_STRING, ID_SHOW_HELP, buffer);
+		LoadStringLang(IDS_MENU_SHOW_UPDATES, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(helpMenu, MF_STRING, ID_SHOW_UPDATES, buffer);
+		LoadStringLang(IDS_MENU_VERSION, (LPTSTR)&buffer, sizeof(buffer));
+		wcscat_s(buffer, SUP_VERSION);
+		AppendMenu(helpMenu, MF_STRING | MF_DISABLED, 0, buffer);
 
 		HMENU creditsMenu = CreateMenu();
-		AppendMenu(helpMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu,
-			L"&Credits");
+		LoadStringLang(IDS_MENU_CREDITS, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(helpMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu, buffer);
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_DAVE, L"&David Lehn");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_MOE, L"&Moritz Kretz");
 	}
@@ -171,6 +227,24 @@ namespace SUP
 				| ((displayNames[i] == notifDisplay) ? MF_CHECKED : MF_UNCHECKED);
 			AppendMenu(hDisplayMenu, flags, ID_SET_NOTIFICATION_DISPLAY + i,
 				displayNames[i].c_str());
+		}
+	}
+
+	void updateLanguageMenu()
+	{
+		int items;
+		UINT sub;
+
+		if ((items = GetMenuItemCount(hLanguageMenu)) < 0)
+			return;
+
+		for (int i = 0; i < items; i++)
+		{
+			if ((sub = GetMenuItemID(hLanguageMenu, i)) < 0)
+				continue;
+
+			CheckMenuItem(hLanguageMenu, sub,
+				(sub == (ID_LANGUAGE_BASEID + languageId)) ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}
 
@@ -338,6 +412,12 @@ namespace SUP
 			hideIdentityPanel ? 0 : identityPanelHeight, SWP_NOMOVE | SWP_NOZORDER);
 	}
 
+	void languageIdChanged()
+	{
+		WritePrivateProfileString(L"config", L"languageId", std::to_wstring(languageId).c_str(),
+			iniPath.c_str());
+	}
+
 	LRESULT CALLBACK newWndProc(HWND _hwnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_message)
@@ -363,6 +443,8 @@ namespace SUP
 				updatePosMenu();
 			else if ((HMENU)_wParam == hDisplayMenu)
 				updateDisplayMenu();
+			else if ((HMENU)_wParam == hLanguageMenu)
+				updateLanguageMenu();
 			break;
 		case WM_COMMAND:
 			if (_wParam == ID_ENABLE_CHAT_FORMAT)
@@ -420,6 +502,21 @@ namespace SUP
 				notifCorner = (ScreenCorner)(_wParam - ID_SET_NOTIFICATION_POS);
 				WritePrivateProfileString(L"config", L"notifCorner",
 					std::to_wstring((int)notifCorner).c_str(), iniPath.c_str());
+			}
+			else if (_wParam >= ID_LANGUAGE_BASEID 
+				&& _wParam <= ID_LANGUAGE_BASEID + 0xFF)
+			{
+				languageId = _wParam - ID_LANGUAGE_BASEID;
+
+				// We need to recreate our menu with new language strings and redraw it
+				HMENU hCurrent = GetMenu(_hwnd);
+				if (hCurrent != hMenu)
+					hMenu = hCurrent;
+				DeleteMenu(hMenu, (UINT)hUtilMenu, MF_BYCOMMAND);
+				createMenus(hCurrent);
+				DrawMenuBar(_hwnd);
+				languageIdChanged();
+				break;
 			}
 			break;
 		}
@@ -503,6 +600,8 @@ namespace SUP
 			iniPath.c_str()) != 0;
 		hideIdentityPanel = GetPrivateProfileInt(L"config", L"hideIdentityPanel", 0,
 			iniPath.c_str()) != 0;
+		languageId = GetPrivateProfileInt(L"config", L"languageId", LANG_DEFAULT,
+			iniPath.c_str());
 		notifCorner = (ScreenCorner)GetPrivateProfileInt(L"config", L"notifCorner", BottomRight,
 			iniPath.c_str());
 		GetPrivateProfileString(L"config", L"notifDisplay", L"", buffer, MAX_PATH,

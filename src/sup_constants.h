@@ -32,6 +32,11 @@ namespace SUP
 #define ID_SHOW_CREDITS_MOE			2402
 #define ID_SHOW_CREDITS_DAVE		2403
 
+#define ID_LANGUAGE_BASEID          3000
+#define ID_LANGUAGE_ENGLISH         ID_LANGUAGE_BASEID + LANG_ENGLISH
+#define ID_LANGUAGE_RUSSIAN         ID_LANGUAGE_BASEID + LANG_RUSSIAN
+#define LANG_DEFAULT                LANG_ENGLISH
+
 // Version String
 #define SUP_VERSION L"1.2.0"
 
