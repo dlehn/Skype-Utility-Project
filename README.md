@@ -10,7 +10,7 @@ The Skype Utility Project is a plugin for *Skype for Windows Desktop*, adding so
 ## What can it do?
 
 The most notable features are:
-- Enable/disable text formatting: The latest Skype version started automatically formatting sent messages based on some special characters (e.g. \*bold\* or ~strike~) which annoyed a lot of people (including us). You can now turn that of with just one click!
+- Enable/disable text formatting: The latest Skype version started automatically formatting sent messages based on some special characters (e.g. \*bold\* or ~strike~) which annoyed a lot of people (including us). You can now turn that off permanently with just one click!
 - Change notification window positioning: Notification window positioning now works smoothly with multiple connected displays. You can, of course, also choose on which display and where on that display your notification windows are supposed to appear.
 - Hide Ads: Hide the advertisement banners above conversations. This will not affect Ads on the Skype "Home" page. After changing this setting, you may need to switch to a different conversation window in order for the changes to be applied.
 
@@ -37,7 +37,7 @@ And that's everything you need to know!
 
 ## What do those options do?
 
-Below is a detailed list of descriptions of the individual menu items, grouped according to their positions in the `SUP` menu.
+Below is a detailed list of descriptions of the individual menu items, grouped according to their locations in the `SUP` menu.
 - *Allow Chat Formatting*: When enabled, special characters may be used to format text. E.g. \*bold\* or ~strike~.
 - *Layout*: Provides options to customize Skype's window layout. When changing any of these options, you need to switch to another conversation in order to make Skype's layout adapt to the changes.
   - *Hide Ads*: Hides/shows the banner ads above chat conversations. Does not apply to ads displayed on the "Home" page.
@@ -47,6 +47,7 @@ Below is a detailed list of descriptions of the individual menu items, grouped a
   - *On Display*: If you have multiple monitors, you can choose on which of the monitors you wish the notification popups to appear.
   - *At Location*: Select in which corner of the selected monitor you want the notifications to appear. Default is bottom right, near your system tray. If you want the notifications to appear more towards the center of the screen, you can customize the exact positions by manually setting the values mentioned in the [Advanced Options](#Advanced-Options) chapter below.
 - *Language*: Change `SUP`'s menu language. So far English, German and Russian are supported. (Feel free to contact us if you can provide translations to other languages or simply create a pull request.)
+- *Help*: Provides information about `SUP` as well as quick links to this page as well as the release download page for new versions.
 
 ## Advanced Options
 
