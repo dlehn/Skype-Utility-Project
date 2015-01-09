@@ -215,3 +215,5 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 *.suo
+*.suo
+build/skype_utility_project.v12.suo

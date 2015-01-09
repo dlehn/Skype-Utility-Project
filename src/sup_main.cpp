@@ -82,8 +82,8 @@ namespace SUP
 		if (!str)
 			return 0;
 
-		for (WORD strPos=0; strPos < (_strID & 0x000F); strPos++)
-			str+=*str+1;
+		for (WORD strPos = 0; strPos < (_strID & 0x000F); strPos++)
+			str += *str + 1;
 		
 		if (!_strLen)
 			return *str;
@@ -93,8 +93,8 @@ namespace SUP
 
 		int len = min(_strLen, *str+1);
 
-		lstrcpyn(_destStr, str+1, len);
-		_destStr[len-1] = TEXT('\0');
+		lstrcpyn(_destStr, str + 1, len);
+		_destStr[len - 1] = TEXT('\0');
 
 		return len;
 	}
@@ -183,7 +183,7 @@ namespace SUP
 		if (!hSkypeMenuAttachTo)
 			return;
 
-		if ((count = GetMenuItemCount(hSkypeMenuAttachTo)) < 0)
+		if ((count = GetMenuItemCount(hSkypeMenuAttachTo)) <= 0)
 			return;
 
 		// Check if our custom menu attached already
@@ -456,7 +456,10 @@ namespace SUP
 		for (int i = 0; i < count; i++) 
 		{
 			if (GetMenuItemInfo(hMenu, i, true, &info) && info.wID == SKYPE_MENU_ID_ATTACH_TO)
+			{
 				hMenuItem = GetSubMenu(hMenu, i);
+				break;
+			}
 		}
 
 		return hMenuItem;
@@ -478,6 +481,14 @@ namespace SUP
 				// We can't attach our menu into Skype submenu because it will refill menu 
 				// content for non english UI language on WM_INITMENUPOPUP message.
 				hSkypeMenuAttachTo = GetSkypeMenuAttachTo();
+
+				// Fallback, in case the Skype devs mess something up in the future.
+				if (!hSkypeMenuAttachTo)
+				{
+					WCHAR buffer[200];
+					LoadStringLang(IDS_MAINMENU, (LPTSTR)&buffer, sizeof(buffer));
+					AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)hUtilMenu, buffer);
+				}
 			}
 			break;
 		}
@@ -495,7 +506,8 @@ namespace SUP
 			else if ((HMENU)_wParam == hSkypeMenuAttachTo)
 			{
 				// Let Skype to dispatch message
-				LRESULT r = CallWindowProc((WNDPROC) oldWndProc, _hwnd, _message, _wParam, _lParam);
+				LRESULT r = CallWindowProc((WNDPROC) oldWndProc, _hwnd, _message, _wParam,
+					_lParam);
 
 				// and now attach our submenu
 				attachMenu();
