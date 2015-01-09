@@ -28,7 +28,7 @@ Alternatively, if you don't trust us, download the source code, open the include
 
 The Skype Utility Project consists of a single file called `d3d9.dll` which you need to place in your Skype installation directory, right next to the `Skype.exe` file (usually that will be in `C:\Program Files (x86)\Skype\Phone\`).
 
-The next time you start Skype, you will notice a new menu item called "SUP" has appeared in the menu bar of Skype's contact list window.
+The next time you start Skype, you will notice a new menu item called "Advanced [SUP]" has appeared in the "Tools" menu of Skype's contact list window.
 
 ![Screenshot](/res/menu.png?raw=true "Screenshot")
 
