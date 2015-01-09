@@ -54,6 +54,7 @@ namespace SUP
 	HMENU hLanguageMenu = NULL;
 	HMENU hDisplayMenu = NULL;
 	HMENU hPosMenu = NULL;
+	HMENU hSkypeMenuAttachTo = NULL;
 	
 	ChatCommandHandler commandHandler;
 
@@ -103,8 +104,6 @@ namespace SUP
 		WCHAR buffer[200];
 
 		hUtilMenu = CreateMenu();
-		LoadStringLang(IDS_MAINMENU, (LPTSTR)&buffer, sizeof(buffer));
-		AppendMenu(_parent, MF_STRING | MF_POPUP, (UINT_PTR)hUtilMenu, buffer);
 
 		UINT flags = MF_STRING | MF_UNCHECKED;
 		LoadStringLang(IDS_MENU_ALLOW_CHAT_FORMATING, (LPTSTR)&buffer, sizeof(buffer));
@@ -174,6 +173,27 @@ namespace SUP
 		AppendMenu(helpMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu, buffer);
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_DAVE, L"&David Lehn");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_MOE, L"&Moritz Kretz");
+	}
+
+	void attachMenu()
+	{
+		WCHAR buffer[200];
+		int count = 0;
+
+		if (!hSkypeMenuAttachTo)
+			return;
+
+		if ((count = GetMenuItemCount(hSkypeMenuAttachTo)) < 0)
+			return;
+
+		// Check if our custom menu attached already
+		if (GetSubMenu(hSkypeMenuAttachTo, count - 1) == hUtilMenu)
+			return;
+
+		AppendMenu(hSkypeMenuAttachTo, MF_SEPARATOR, NULL, NULL);
+
+		LoadStringLang(IDS_MAINMENU, (LPTSTR) &buffer, sizeof(buffer));
+		AppendMenu(hSkypeMenuAttachTo, MF_STRING | MF_POPUP, (UINT_PTR) hUtilMenu, buffer);
 	}
 
 	void updateUtilMenu()
@@ -422,6 +442,26 @@ namespace SUP
 			iniPath.c_str());
 	}
 
+	HMENU GetSkypeMenuAttachTo()
+	{
+		HMENU hMenuItem = NULL;
+		MENUITEMINFO info;
+
+		info.cbSize = sizeof(MENUITEMINFO);
+		info.fMask = MIIM_ID; // Get only menu item ID
+
+		int count = GetMenuItemCount(hMenu);
+
+		// Yes, there is the only one stupid way to get menu ID by its HMENU
+		for (int i = 0; i < count; i++) 
+		{
+			if (GetMenuItemInfo(hMenu, i, true, &info) && info.wID == SKYPE_MENU_ID_ATTACH_TO)
+				hMenuItem = GetSubMenu(hMenu, i);
+		}
+
+		return hMenuItem;
+	}
+
 	LRESULT CALLBACK newWndProc(HWND _hwnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_message)
@@ -429,12 +469,15 @@ namespace SUP
 		case WM_ERASEBKGND:
 		{
 			// This message happens to be sent when the user changes Skype's layout. We can use
-			// this to check whether we need to reattach our custom menu.
+			// this to check whether we need to recreate our custom menu.
 			HMENU hCurrent = GetMenu(_hwnd);
 			if (hCurrent != hMenu)
 			{
 				createMenus(hCurrent);
 				hMenu = hCurrent;
+				// We can't attach our menu into Skype submenu because it will refill menu 
+				// content for non english UI language on WM_INITMENUPOPUP message.
+				hSkypeMenuAttachTo = GetSkypeMenuAttachTo();
 			}
 			break;
 		}
@@ -449,6 +492,16 @@ namespace SUP
 				updateDisplayMenu();
 			else if ((HMENU)_wParam == hLanguageMenu)
 				updateLanguageMenu();
+			else if ((HMENU)_wParam == hSkypeMenuAttachTo)
+			{
+				// Let Skype to dispatch message
+				LRESULT r = CallWindowProc((WNDPROC) oldWndProc, _hwnd, _message, _wParam, _lParam);
+
+				// and now attach our submenu
+				attachMenu();
+
+				return r;
+			}
 			break;
 		case WM_COMMAND:
 			if (_wParam == ID_ENABLE_CHAT_FORMAT)

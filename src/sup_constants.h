@@ -38,6 +38,16 @@ namespace SUP
 #define ID_LANGUAGE_RUSSIAN			ID_LANGUAGE_BASEID + LANG_RUSSIAN
 #define LANG_DEFAULT				LANG_ENGLISH
 
+// Skype mainmenu item ID attach to
+// 0x45 Skype
+// 0x46 Contacts
+// 0x47 Call
+// 0x48 Conversation
+// 0x49 View
+// 0x4A Tools
+// 0x4B Help
+#define SKYPE_MENU_ID_ATTACH_TO		0x49
+
 // Version String
 #define SUP_VERSION L"1.3.0"
 
