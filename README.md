@@ -38,8 +38,8 @@ And that's everything you need to know!
 ## What do those options do?
 
 Below is a detailed list of descriptions of the individual menu items, grouped according to their locations in the `SUP` menu.
-- *Allow Chat Formatting*: When enabled, special characters may be used to format text. E.g. \*bold\* or ~strike~.
-- *Layout*: Provides options to customize Skype's window layout. When changing any of these options, you need to switch to another conversation in order to make Skype's layout adapt to the changes.
+- *Disable Chat Formatting*: When selected, special characters may no longer be used to format text. E.g. \*bold\* or ~strike~ but will appear as normal characters.
+- *Layout*: Provides options to customize Skype's window layout.
   - *Hide Ads*: Hides/shows the banner ads above chat conversations. Does not apply to ads displayed on the "Home" page.
   - *Hide Home Toolbar*: Hides/shows the panel containing the "Home" and "Call phones" buttons.
   - *Hide Identity Panel*: Hides/shows the panel containing your user name and current status. Hiding this is probably not very convenient, but may still help e.g. on a laptop display where space is scarce.
@@ -62,7 +62,6 @@ Note that in order to apply changes to these values, you will have to restart Sk
 
 ## Who did it?
 
-This project is a combined effort of [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and myself ([David Lehn](http://blog.mountain-view.de "Portfolio")).  
-Thanks a lot to [NDS](https://github.com/nestdimon) for creating the localization functionality and Russian translation!
+This project is a combined effort of [David Lehn](http://blog.mountain-view.de "Portfolio"), [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and [NDS](https://github.com/nestdimon).
 
 We hope this will be of use to somebody. If not, well... at least you didn't pay for it, I guess.
