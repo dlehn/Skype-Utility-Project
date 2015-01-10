@@ -465,6 +465,12 @@ namespace SUP
 		return hMenuItem;
 	}
 
+	void ForceWindowToUpdate(HWND _hwnd)
+	{
+		WINDOWPOS pos;
+		SendMessage(_hwnd, WM_WINDOWPOSCHANGED, NULL, (LPARAM)&pos);
+	}
+
 	LRESULT CALLBACK newWndProc(HWND _hwnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_message)
@@ -530,11 +536,13 @@ namespace SUP
 			{
 				hideAppToolbar = !hideAppToolbar;
 				hideAppToolbarChanged();
+				ForceWindowToUpdate(_hwnd);
 			}
 			else if (_wParam == ID_HIDE_IDENTITY_PANEL)
 			{
 				hideIdentityPanel = !hideIdentityPanel;
 				hideIdentityPanelChanged();
+				ForceWindowToUpdate(_hwnd);
 			}
 			else if (_wParam == ID_SHOW_HELP)
 			{
