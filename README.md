@@ -38,7 +38,7 @@ And that's everything you need to know!
 ## What do those options do?
 
 Below is a detailed list of descriptions of the individual menu items, grouped according to their locations in the `SUP` menu.
-- *Disable Chat Formatting*: When selected, special characters may no longer be used to format text. E.g. \*bold\* or ~strike~ but will appear as normal characters.
+- *Disable Chat Formatting*: When selected, special characters may no longer be used to format text (e.g. \*bold\* or ~strike~) but will appear as normal characters.
 - *Layout*: Provides options to customize Skype's window layout.
   - *Hide Ads*: Hides/shows the banner ads above chat conversations. Does not apply to ads displayed on the "Home" page.
   - *Hide Home Toolbar*: Hides/shows the panel containing the "Home" and "Call phones" buttons.
