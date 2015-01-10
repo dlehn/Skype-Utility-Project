@@ -325,7 +325,18 @@ namespace SUP
 			iniPath.c_str());
 
 		if (!hideAds)
+		{
+			forceLayoutUpdate(hWnd);
+			HWND parent = NULL;
+			while (true)
+			{
+				parent = findWindowInProcess(CLS_CONVERSATION_FORM.c_str(), nullptr, parent);
+				if (!parent)
+					break;
+				forceLayoutUpdate(parent);
+			}
 			return;
+		}
 
 		RECT r;
 		HWND banner = NULL;
@@ -358,6 +369,7 @@ namespace SUP
 				SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
 			}
 		}
+		forceLayoutUpdate(hWnd);
 
 		// Split view
 		parent = NULL;
@@ -377,6 +389,7 @@ namespace SUP
 				GetWindowRect(banner, &r);
 				SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
 			}
+			forceLayoutUpdate(parent);
 		}
 	}
 
@@ -465,12 +478,6 @@ namespace SUP
 		return hMenuItem;
 	}
 
-	void ForceWindowToUpdate(HWND _hwnd)
-	{
-		WINDOWPOS pos;
-		SendMessage(_hwnd, WM_WINDOWPOSCHANGED, NULL, (LPARAM)&pos);
-	}
-
 	LRESULT CALLBACK newWndProc(HWND _hwnd, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{
 		switch (_message)
@@ -536,13 +543,13 @@ namespace SUP
 			{
 				hideAppToolbar = !hideAppToolbar;
 				hideAppToolbarChanged();
-				ForceWindowToUpdate(_hwnd);
+				forceLayoutUpdate(_hwnd);
 			}
 			else if (_wParam == ID_HIDE_IDENTITY_PANEL)
 			{
 				hideIdentityPanel = !hideIdentityPanel;
 				hideIdentityPanelChanged();
-				ForceWindowToUpdate(_hwnd);
+				forceLayoutUpdate(_hwnd);
 			}
 			else if (_wParam == ID_SHOW_HELP)
 			{

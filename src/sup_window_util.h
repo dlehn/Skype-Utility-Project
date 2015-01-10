@@ -14,6 +14,9 @@ namespace SUP
 	// child windows are available, the first found child window will be returned. If no
 	// matching child windows were found at all, returns NULL.
 	HWND findVisibleChild(HWND _parent, const wchar_t* _wndClass, const wchar_t* _wndTitle);
+
+	// Force a window to update its layout.
+	void forceLayoutUpdate(HWND _hwnd);
 }
 
 #endif

@@ -49,6 +49,6 @@ namespace SUP
 #define SKYPE_MENU_ID_ATTACH_TO		0x4A
 
 // Version String
-#define SUP_VERSION L"1.3.2"
+#define SUP_VERSION L"1.3.3"
 
 #endif

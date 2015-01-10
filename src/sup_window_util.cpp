@@ -40,4 +40,10 @@ namespace SUP
 
 		return result;
 	}
+
+	void forceLayoutUpdate(HWND _hwnd)
+	{
+		WINDOWPOS pos;
+		SendMessage(_hwnd, WM_WINDOWPOSCHANGED, NULL, (LPARAM)&pos);
+	}
 }
