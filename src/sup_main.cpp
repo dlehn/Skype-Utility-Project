@@ -199,7 +199,7 @@ namespace SUP
 	void updateUtilMenu()
 	{
 		CheckMenuItem(hUtilMenu, ID_ENABLE_CHAT_FORMAT,
-			enableChatFormat ? MF_CHECKED : MF_UNCHECKED);
+			enableChatFormat ? MF_UNCHECKED : MF_CHECKED);
 	}
 
 	void updateLayoutMenu()
