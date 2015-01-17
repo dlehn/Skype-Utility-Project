@@ -31,6 +31,7 @@ namespace SUP
 #define ID_SHOW_UPDATES				2401
 #define ID_SHOW_CREDITS_MOE			2402
 #define ID_SHOW_CREDITS_DAVE		2403
+#define ID_SHOW_CREDITS_NDS			2404
 
 #define ID_LANGUAGE_BASEID			3000
 #define ID_LANGUAGE_GERMAN			ID_LANGUAGE_BASEID + LANG_GERMAN
@@ -49,6 +50,6 @@ namespace SUP
 #define SKYPE_MENU_ID_ATTACH_TO		0x4A
 
 // Version String
-#define SUP_VERSION L"1.3.3"
+#define SUP_VERSION L"1.3.4"
 
 #endif

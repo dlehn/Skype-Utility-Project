@@ -173,6 +173,7 @@ namespace SUP
 		AppendMenu(helpMenu, MF_STRING | MF_POPUP, (UINT_PTR)creditsMenu, buffer);
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_DAVE, L"&David Lehn");
 		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_MOE, L"&Moritz Kretz");
+		AppendMenu(creditsMenu, MF_STRING, ID_SHOW_CREDITS_NDS, L"&NDS");
 	}
 
 	void attachMenu()
@@ -571,6 +572,11 @@ namespace SUP
 			else if (_wParam == ID_SHOW_CREDITS_MOE)
 			{
 				ShellExecute(NULL, L"open", L"http://kretzmoritz.wordpress.com/", nullptr,
+					nullptr, SW_SHOWNORMAL);
+			}
+			else if (_wParam == ID_SHOW_CREDITS_NDS)
+			{
+				ShellExecute(NULL, L"open", L"https://github.com/nestdimon", nullptr,
 					nullptr, SW_SHOWNORMAL);
 			}
 			else if (_wParam >= ID_SET_NOTIFICATION_DISPLAY
