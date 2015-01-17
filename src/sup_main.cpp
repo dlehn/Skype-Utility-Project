@@ -702,7 +702,11 @@ namespace SUP
 		commandHandler.setMainForm(hWnd);
 
 		hideAdsChanged();
-		chatFormatChanged();
+
+		// At Skype startup value of Lib/Conversation/EnableWiki is 1,
+		// so no need to update if user has disabled "Disable Chat Formatting" option
+		if (!enableChatFormat)
+			chatFormatChanged();
 
 		MSG msg;
 		while (GetMessage(&msg, NULL, 0, 0))
