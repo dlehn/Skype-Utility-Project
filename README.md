@@ -20,7 +20,9 @@ For a full list of features, check out the [feature description](#what-do-those-
 
 ### Where can I get SUP?
 
-You can download the latest compiled version of this plugin from the rather inconspicuous "Releases" section right [here](https://github.com/dlehn/Skype-Utility-Project/releases).
+You can download the latest compiled version of this plugin from the rather inconspicuous "Releases" section right [here](https://github.com/dlehn/Skype-Utility-Project/releases).  
+For those of you using [Chocolatey](https://chocolatey.org/), you can also install SUP from the command line by typing:  
+`choco install skype-utility-project`
 
 Alternatively, if you don't trust us, download the source code, open the included Visual Studio project and hit compile!
 
@@ -62,6 +64,7 @@ Note that in order to apply changes to these values, you will have to restart Sk
 
 ## Who did it?
 
-This project is a combined effort of [David Lehn](http://blog.mountain-view.de "Portfolio"), [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and [NDS](https://github.com/nestdimon).
+This project is a combined effort of [David Lehn](http://blog.mountain-view.de "Portfolio"), [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and [NDS](https://github.com/nestdimon).  
+Thanks to [Chris McGrath](https://github.com/cpmcgrath) for the Chocolatey installer script!
 
 We hope this will be of use to somebody. If not, well... at least you didn't pay for it, I guess.
