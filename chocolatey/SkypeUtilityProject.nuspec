@@ -21,11 +21,11 @@
     <!-- Important note about https://cdn.rawgit.com: Files are cached permanently after the first request. Use commit URLs when updating the icon. -->
     <!--<iconUrl>http://cdn.rawgit.com/dlehn/master/icons/SkypeUtilityProject.png</iconUrl>-->
     <dependencies>
-      <dependency id="skype" version="7.0.0.102" />
+      <!-- <dependency id="skype" version="7.0.0.102" /> -->
     </dependencies>
     <releaseNotes></releaseNotes>
   </metadata>
   <files>
-    <!-- <file src="tools\**" target="tools" /> -->
+    <file src="tools\**" target="tools" />
   </files>
 </package>
