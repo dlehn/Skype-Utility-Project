@@ -3,11 +3,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
-    <id>SkypeUtilityProject</id>
+    <id>skype-utility-project</id>
     <title>Skype Utility Project</title>
     <version>1.3.4</version>
-    <authors>dlehn</authors>
-    <owners>dlehn</owners>
+    <authors>David Lehn, Moritz Kretz, NDS</authors>
+    <owners>David Lehn</owners>
     <summary>The Skype Utility Project adds useful functionality the Skype developers were too lazy to implement.</summary>
     <description>
         The Skype Utility Project is a plugin for Skype for Windows Desktop, adding some useful functionality the original developers were too lazy to implement.
@@ -26,6 +26,6 @@
     <releaseNotes></releaseNotes>
   </metadata>
   <files>
-    <file src="tools\**" target="tools" />
+    <!-- <file src="tools\**" target="tools" /> -->
   </files>
 </package>
