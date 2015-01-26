@@ -12,9 +12,12 @@
     <description>
         The Skype Utility Project is a plugin for Skype for Windows Desktop, adding some useful functionality the original developers were too lazy to implement.
         (Please note that this plugin works only with the Windows Desktop version of Skype, other platforms are not supported.)
+        
+        This plugin allows you to hide advertisement banners above conversations, customize the positioning of notification popups, and turn off formatting tags in chat messages, among other things.
+        Check out the project description on GitHub for a full list of features.
     </description>
     <projectUrl>https://github.com/dlehn/Skype-Utility-Project</projectUrl>
-    <tags>SkypeUtilityProject</tags>
+    <tags>SkypeUtilityProject SUP Skype ads formatting notifications</tags>
     <copyright></copyright>
     <licenseUrl>https://github.com/dlehn/Skype-Utility-Project</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
