@@ -10,4 +10,5 @@ namespace SUP
 	const std::wstring CLS_TRAY_ALERT = L"TTrayAlert";
 	const std::wstring CLS_APP_TOOLBAR = L"TAppToolbarControl";
 	const std::wstring CLS_IDENTITY_PANEL = L"TMyselfControl";
+	const std::wstring CLS_LOGIN_FORM = L"TLoginForm";
 }

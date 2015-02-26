@@ -72,6 +72,10 @@ namespace SUP
 	std::vector<std::wstring> displayNames;
 	int appToolbarHeight = 0;
 	int identityPanelHeight = 0;
+	// Variable used to ensure that forced layout is only applied after the Skype contact list
+	// has been displayed for the first time. Otherwise Skype will crash or freeze in Version
+	// 7.1.0.105 if the "Hide Identity Panel" option is enabled.
+	bool allowHideIdentityPanel = false;
 
 	WORD LoadStringLang(UINT _strID, LPTSTR _destStr, WORD _strLen)
 	{
@@ -628,6 +632,22 @@ namespace SUP
 			{
 				commandHandler.executePendingCommands(_hwnd);
 			}
+			else if (!allowHideIdentityPanel && className == CLS_MAIN_FORM)
+			{
+				allowHideIdentityPanel = true;
+				// Apply Hide Identity Panel option if it is enabled.
+				if (hideIdentityPanel)
+				{
+					HWND hwnd = findVisibleChild(_hwnd, CLS_IDENTITY_PANEL.c_str(), nullptr);
+					if (hwnd)
+					{
+						RECT r;
+						GetWindowRect(hwnd, &r);
+						SetWindowPos(hwnd, NULL, 0, 0, r.right - r.left, 0,
+							SWP_NOMOVE | SWP_NOZORDER);
+					}
+				}
+			}
 			break;
 		}
 		case EVENT_OBJECT_LOCATIONCHANGE:
@@ -647,7 +667,8 @@ namespace SUP
 			}
 			else if ((hideAds && className == CLS_CHAT_BANNER)
 				|| (hideAppToolbar && className == CLS_APP_TOOLBAR)
-				|| (hideIdentityPanel && className == CLS_IDENTITY_PANEL))
+				|| (allowHideIdentityPanel && hideIdentityPanel
+				&& className == CLS_IDENTITY_PANEL))
 			{
 				RECT r;
 				GetWindowRect(_hwnd, &r);

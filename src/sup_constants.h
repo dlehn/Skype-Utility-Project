@@ -14,7 +14,29 @@ namespace SUP
 	extern const std::wstring CLS_TRAY_ALERT;
 	extern const std::wstring CLS_APP_TOOLBAR;
 	extern const std::wstring CLS_IDENTITY_PANEL;
+	extern const std::wstring CLS_LOGIN_FORM;
 }
+
+// Skype Main menu item IDs
+// 0x45 Skype
+// 0x46 Contacts
+// 0x47 Call
+// 0x48 Conversation
+// 0x49 View
+// 0x4A Tools
+// 0x4B Help
+#define SKYPE_MENU_ID_ATTACH_TO		0x4A
+
+// Skype Tools menu item IDs
+// 0xB8 Change Language
+// 0xBA Skype WiFi...
+// 0xBC Options...
+#define SKYPE_MENU_ID_CHANGE_LANGUAGE	0xB8
+
+// The lowest ID in Skype's language selection menu.
+#define SKYPE_MENU_ID_LANGUAGE_MIN		0xC8
+// The highest ID in Skype's language selection menu.
+#define SKYPE_MENU_ID_LANGUAGE_MAX		0xED
 
 // Menu IDs
 #define ID_ENABLE_CHAT_FORMAT		2000
@@ -39,17 +61,8 @@ namespace SUP
 #define ID_LANGUAGE_RUSSIAN			ID_LANGUAGE_BASEID + LANG_RUSSIAN
 #define LANG_DEFAULT				LANG_ENGLISH
 
-// Skype mainmenu item ID attach to
-// 0x45 Skype
-// 0x46 Contacts
-// 0x47 Call
-// 0x48 Conversation
-// 0x49 View
-// 0x4A Tools
-// 0x4B Help
-#define SKYPE_MENU_ID_ATTACH_TO		0x4A
 
 // Version String
-#define SUP_VERSION L"1.3.4"
+#define SUP_VERSION					L"1.3.5"
 
 #endif
