@@ -59,6 +59,7 @@ These values are:
 - Section `[config]`
   - `notifOffsetX`: Horizontal offset of notification windows from the edge of the display in pixels.
   - `notifOffsetY`: Vertical offset of notification windows from the edge of the display in pixels.
+  - `viewChangeUpdateDelay`: Time in ms after which to reapply any forced layout changes after Skype's view mode (split or combined view) has been changed. Default value is 500, increase this if you are experiencing issues after switching between view modes.
 
 Note that in order to apply changes to these values, you will have to restart Skype.
 
