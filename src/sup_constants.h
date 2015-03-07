@@ -25,7 +25,8 @@ namespace SUP
 // 0x49 View
 // 0x4A Tools
 // 0x4B Help
-#define SKYPE_MENU_ID_ATTACH_TO		0x4A
+// - No longer valid from 7.1.60.105 onwards, Tools menu is 0x4B now.
+#define SKYPE_MENU_ID_ATTACH_TO			0x4B
 
 // Skype Tools menu item IDs
 // 0xB8 Change Language
@@ -38,7 +39,12 @@ namespace SUP
 // The highest ID in Skype's language selection menu.
 #define SKYPE_MENU_ID_LANGUAGE_MAX		0xED
 
-// Menu IDs
+// Menu option to switch to split view
+#define SKYPE_MENU_ID_VIEW_SPLIT		0xB4
+// Menu option to switch to combined view
+#define SKYPE_MENU_ID_VIEW_COMBINED		0xB3
+
+// Custom Menu IDs
 #define ID_ENABLE_CHAT_FORMAT		2000
 
 #define ID_HIDE_ADS					2100
@@ -61,8 +67,10 @@ namespace SUP
 #define ID_LANGUAGE_RUSSIAN			ID_LANGUAGE_BASEID + LANG_RUSSIAN
 #define LANG_DEFAULT				LANG_ENGLISH
 
+// Custom Timer IDs
+#define TIMER_ID_VIEW_CHANGED		4200
 
 // Version String
-#define SUP_VERSION					L"1.3.5"
+#define SUP_VERSION					L"1.3.6"
 
 #endif

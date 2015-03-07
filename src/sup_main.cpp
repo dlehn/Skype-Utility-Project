@@ -68,6 +68,7 @@ namespace SUP
 	int languageId = 0;
 	int notifOffsetX = 0;
 	int notifOffsetY = 0;
+	int viewChangeUpdateDelay = 500;
 
 	std::vector<std::wstring> displayNames;
 	int appToolbarHeight = 0;
@@ -343,7 +344,6 @@ namespace SUP
 			return;
 		}
 
-		RECT r;
 		HWND banner = NULL;
 		while (true)
 		{
@@ -351,8 +351,7 @@ namespace SUP
 			if (!banner)
 				break;
 
-			GetWindowRect(banner, &r);
-			SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
+			SetWindowPos(banner, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 		}
 
 		// Combined view
@@ -370,8 +369,7 @@ namespace SUP
 				if (!banner)
 					break;
 
-				GetWindowRect(banner, &r);
-				SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
+				SetWindowPos(banner, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 			}
 		}
 		forceLayoutUpdate(hWnd);
@@ -391,8 +389,7 @@ namespace SUP
 				if (!banner)
 					break;
 
-				GetWindowRect(banner, &r);
-				SetWindowPos(banner, NULL, 0, 0, r.right - r.left, 0, SWP_NOMOVE | SWP_NOZORDER);
+				SetWindowPos(banner, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 			}
 			forceLayoutUpdate(parent);
 		}
@@ -523,7 +520,7 @@ namespace SUP
 				updateLanguageMenu();
 			else if ((HMENU)_wParam == hSkypeMenuAttachTo)
 			{
-				// Let Skype to dispatch message
+				// Let Skype dispatch message
 				LRESULT r = CallWindowProc((WNDPROC) oldWndProc, _hwnd, _message, _wParam,
 					_lParam);
 
@@ -534,6 +531,23 @@ namespace SUP
 			}
 			break;
 		case WM_COMMAND:
+			if (_wParam == SKYPE_MENU_ID_VIEW_SPLIT)
+			{
+				// Let Skype dispatch message
+				LRESULT r = CallWindowProc((WNDPROC)oldWndProc, _hwnd, _message, _wParam,
+					_lParam);
+
+				static auto timerProc =
+					[](HWND _hwnd, UINT _uMsg, UINT_PTR _idEvent, DWORD _dwTime)
+					{
+						KillTimer(_hwnd, TIMER_ID_VIEW_CHANGED);
+						hideAdsChanged();
+					};
+				// Dirty hack to force the layout to update after switching to split view.
+				SetTimer(_hwnd, TIMER_ID_VIEW_CHANGED, viewChangeUpdateDelay, timerProc);
+
+				return r;
+			}
 			if (_wParam == ID_ENABLE_CHAT_FORMAT)
 			{
 				enableChatFormat = !enableChatFormat;
@@ -648,6 +662,17 @@ namespace SUP
 					}
 				}
 			}
+			else if (hideAds && className == CLS_CONVERSATION_FORM)
+			{
+				// Required to force banners to be hidden when using split window mode in Skype
+				// versions 7.1.60.105 and up.
+				HWND hwnd = FindWindowEx(_hwnd, NULL, CLS_CHAT_BANNER.c_str(), nullptr);
+				if (hwnd)
+				{
+					SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
+						SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+				}
+			}
 			break;
 		}
 		case EVENT_OBJECT_LOCATIONCHANGE:
@@ -665,8 +690,11 @@ namespace SUP
 				MoveWindow(_hwnd, pos.x, pos.y, rect.right - rect.left, rect.bottom - rect.top,
 					TRUE);
 			}
-			else if ((hideAds && className == CLS_CHAT_BANNER)
-				|| (hideAppToolbar && className == CLS_APP_TOOLBAR)
+			else if (hideAds && className == CLS_CHAT_BANNER)
+			{
+				SetWindowPos(_hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+			}
+			else if ((hideAppToolbar && className == CLS_APP_TOOLBAR)
 				|| (allowHideIdentityPanel && hideIdentityPanel
 				&& className == CLS_IDENTITY_PANEL))
 			{
@@ -720,6 +748,8 @@ namespace SUP
 		notifDisplay = buffer;
 		notifOffsetX = GetPrivateProfileInt(L"config", L"notifOffsetX", 0, iniPath.c_str());
 		notifOffsetY = GetPrivateProfileInt(L"config", L"notifOffsetY", 0, iniPath.c_str());
+		viewChangeUpdateDelay = GetPrivateProfileInt(L"config", L"viewChangeUpdateDelay", 500,
+			iniPath.c_str());
 
 		while (hWnd == NULL)
 			hWnd = findWindowInProcess(L"tSkMainForm", nullptr);

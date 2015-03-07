@@ -45,8 +45,12 @@ namespace SUP
 
 	void forceLayoutUpdate(HWND _hwnd)
 	{
-		WINDOWPOS pos;
-		SendMessage(_hwnd, WM_WINDOWPOSCHANGED, NULL, (LPARAM)&pos);
+		RECT r;
+		GetWindowRect(_hwnd, &r);
+		SetWindowPos(_hwnd, NULL, 0, 0, r.right - r.left + 1, r.bottom - r.top + 1,
+			SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
+		SetWindowPos(_hwnd, NULL, 0, 0, r.right - r.left, r.bottom - r.top,
+			SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
 	}
 
 	CComPtr<IHTMLDocument2> getHTMLDocumentFromIEServer(HWND _hwnd)
