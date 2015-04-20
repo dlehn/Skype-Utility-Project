@@ -584,7 +584,7 @@ namespace SUP
 			}
 			else if (_wParam == ID_SHOW_CREDITS_DAVE)
 			{
-				ShellExecute(NULL, L"open", L"http://blog.mountain-view.de/", nullptr, nullptr,
+				ShellExecute(NULL, L"open", L"http://wordofdave.net/", nullptr, nullptr,
 					SW_SHOWNORMAL);
 			}
 			else if (_wParam == ID_SHOW_CREDITS_MOE)
@@ -635,13 +635,32 @@ namespace SUP
 	void APIENTRY notificationHook(HWINEVENTHOOK _hWinEventHook, DWORD _event, HWND _hwnd,
 		LONG _idObject, LONG _idChild, DWORD _idEventThread, DWORD _dwmsEventTime)
 	{
+		wchar_t className[MAX_CLASS_NAME] = {0};
+		GetClassName(_hwnd, className, MAX_CLASS_NAME);
+
+		if (className == CLS_TRAY_ALERT)
+		{
+			RECT rect;
+			if (!GetWindowRect(_hwnd, &rect))
+				return;
+
+			POINT pos = calcWindowPos(rect);
+			MoveWindow(_hwnd, pos.x, pos.y, rect.right - rect.left, rect.bottom - rect.top,
+				TRUE);
+
+			return;
+		}
+		else if (className == CLS_CHAT_BANNER)
+		{
+			if (hideAds)
+				SetWindowPos(_hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+			return;
+		}
+
 		switch (_event)
 		{
 		case EVENT_OBJECT_SHOW:
 		{
-			wchar_t className[MAX_CLASS_NAME] = {0};
-			GetClassName(_hwnd, className, MAX_CLASS_NAME);
-
 			if (className == CLS_CHAT_RICH_EDIT)
 			{
 				commandHandler.executePendingCommands(_hwnd);
@@ -677,24 +696,7 @@ namespace SUP
 		}
 		case EVENT_OBJECT_LOCATIONCHANGE:
 		{
-			wchar_t className[MAX_CLASS_NAME] = {0};
-			GetClassName(_hwnd, className, MAX_CLASS_NAME);
-
-			if (className == CLS_TRAY_ALERT)
-			{
-				RECT rect;
-				if (!GetWindowRect(_hwnd, &rect))
-					return;
-
-				POINT pos = calcWindowPos(rect);
-				MoveWindow(_hwnd, pos.x, pos.y, rect.right - rect.left, rect.bottom - rect.top,
-					TRUE);
-			}
-			else if (hideAds && className == CLS_CHAT_BANNER)
-			{
-				SetWindowPos(_hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-			}
-			else if ((hideAppToolbar && className == CLS_APP_TOOLBAR)
+			if ((hideAppToolbar && className == CLS_APP_TOOLBAR)
 				|| (allowHideIdentityPanel && hideIdentityPanel
 				&& className == CLS_IDENTITY_PANEL))
 			{
