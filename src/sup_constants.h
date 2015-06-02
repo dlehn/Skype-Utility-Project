@@ -17,28 +17,6 @@ namespace SUP
 	extern const std::wstring CLS_LOGIN_FORM;
 }
 
-// Skype Main menu item IDs
-// 0x45 Skype
-// 0x46 Contacts
-// 0x47 Call
-// 0x48 Conversation
-// 0x49 View
-// 0x4A Tools
-// 0x4B Help
-// - No longer valid from 7.1.60.105 onwards, Tools menu is 0x4B now.
-#define SKYPE_MENU_ID_ATTACH_TO			0x4B
-
-// Skype Tools menu item IDs
-// 0xB8 Change Language
-// 0xBA Skype WiFi...
-// 0xBC Options...
-#define SKYPE_MENU_ID_CHANGE_LANGUAGE	0xB8
-
-// The lowest ID in Skype's language selection menu.
-#define SKYPE_MENU_ID_LANGUAGE_MIN		0xC8
-// The highest ID in Skype's language selection menu.
-#define SKYPE_MENU_ID_LANGUAGE_MAX		0xED
-
 // Menu option to switch to split view
 #define SKYPE_MENU_ID_VIEW_SPLIT		0xB4
 // Menu option to switch to combined view
@@ -71,6 +49,6 @@ namespace SUP
 #define TIMER_ID_VIEW_CHANGED		4200
 
 // Version String
-#define SUP_VERSION					L"1.3.7"
+#define SUP_VERSION					L"1.3.8"
 
 #endif

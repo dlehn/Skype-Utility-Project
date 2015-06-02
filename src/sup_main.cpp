@@ -467,15 +467,10 @@ namespace SUP
 
 		int count = GetMenuItemCount(hMenu);
 
-		// Yes, there is the only one stupid way to get menu ID by its HMENU
-		for (int i = 0; i < count; i++) 
-		{
-			if (GetMenuItemInfo(hMenu, i, true, &info) && info.wID == SKYPE_MENU_ID_ATTACH_TO)
-			{
-				hMenuItem = GetSubMenu(hMenu, i);
-				break;
-			}
-		}
+		// Assume that the "Options" menu we want to attach our menu to is the second-to-last item,
+		// before the final "Help" menu. Not exactly reliable, but not any worse than hardcoding
+		// the menu ID and less likely to be broken by future Skype updates.
+		hMenuItem = GetSubMenu(hMenu, count - 2);
 
 		return hMenuItem;
 	}
