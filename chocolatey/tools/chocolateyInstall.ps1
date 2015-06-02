@@ -1,5 +1,5 @@
 ﻿$packageName = 'skype-utility-project'
-$url = 'https://github.com/dlehn/Skype-Utility-Project/releases/download/1.3.7/skype_utility_project_binary_1.3.7.zip'
+$url = 'https://github.com/dlehn/Skype-Utility-Project/releases/download/1.3.8/skype_utility_project_binary_1.3.8.zip'
 $skypeRegistry = "HKLM:\Software\Skype"
 if (Test-Path HKLM:\Software\Wow6432Node\Skype)
 {
