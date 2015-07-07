@@ -3,7 +3,7 @@ Skype Utility Project
 
 Welcome to the Skype Utility Project!  
 
-(If you're impatient you can [**download the latest version here**](/releases/latest).)
+(If you're impatient you can [**download the latest version here**](https://github.com/dlehn/Skype-Utility-Project/releases/latest).)
 
 ## What is it?
 
