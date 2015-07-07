@@ -1,7 +1,9 @@
 Skype Utility Project
 =====================
 
-Welcome to the Skype Utility Project!
+Welcome to the Skype Utility Project!  
+
+(If you're impatient and just want a download, go [**here**](https://github.com/dlehn/Skype-Utility-Project/releases) and click on the first link that says "skype_utility_project_binary_<version>.zip".)
 
 ## What is it?
 
