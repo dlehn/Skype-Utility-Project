@@ -25,9 +25,9 @@ namespace SUP
 		return result;
 	}
 
-	HWND findVisibleChild(HWND _parent, const wchar_t* _wndClass, const wchar_t* _wndTitle)
+	HWND findVisibleChild(HWND _parent, const wchar_t* _wndClass, const wchar_t* _wndTitle, HWND _prev)
 	{
-		HWND resultFirst = FindWindowEx(_parent, NULL, _wndClass, _wndTitle);
+		HWND resultFirst = FindWindowEx(_parent, _prev, _wndClass, _wndTitle);
 		HWND result = resultFirst;
 		while (result != NULL && IsWindowVisible(result) == FALSE)
 		{

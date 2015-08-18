@@ -218,3 +218,4 @@ pip-log.txt
 *.suo
 build/skype_utility_project.v12.suo
 *.nupkg
+*.suo

@@ -23,7 +23,7 @@ namespace SUP
 #define SKYPE_MENU_ID_VIEW_COMBINED		0xB3
 
 // Custom Menu IDs
-#define ID_ENABLE_CHAT_FORMAT		2000
+#define ID_AUTO_FOCUS_CHAT_ENTRY	2000
 
 #define ID_HIDE_ADS					2100
 #define ID_HIDE_APP_TOOLBAR			2101
@@ -49,6 +49,6 @@ namespace SUP
 #define TIMER_ID_VIEW_CHANGED		4200
 
 // Version String
-#define SUP_VERSION					L"1.3.8"
+#define SUP_VERSION					L"1.4.0"
 
 #endif

@@ -59,7 +59,7 @@ namespace SUP
 	ChatCommandHandler commandHandler;
 
 	std::wstring iniPath;
-	bool enableChatFormat = true;
+	bool autoFocusChatEntry = false;
 	bool hideAds = false;
 	bool hideAppToolbar = false;
 	bool hideIdentityPanel = false;
@@ -111,8 +111,8 @@ namespace SUP
 		hUtilMenu = CreateMenu();
 
 		UINT flags = MF_STRING | MF_UNCHECKED;
-		LoadStringLang(IDS_MENU_ALLOW_CHAT_FORMATING, (LPTSTR)&buffer, sizeof(buffer));
-		AppendMenu(hUtilMenu, flags, ID_ENABLE_CHAT_FORMAT, buffer);
+		LoadStringLang(IDS_MENU_AUTO_FOCUS_CHAT_ENTRY, (LPTSTR)&buffer, sizeof(buffer));
+		AppendMenu(hUtilMenu, flags, ID_AUTO_FOCUS_CHAT_ENTRY, buffer);
 
 		hLayoutMenu = CreateMenu();
 		LoadStringLang(IDS_MENU_LAYOUT, (LPTSTR)&buffer, sizeof(buffer));
@@ -204,8 +204,8 @@ namespace SUP
 
 	void updateUtilMenu()
 	{
-		CheckMenuItem(hUtilMenu, ID_ENABLE_CHAT_FORMAT,
-			enableChatFormat ? MF_UNCHECKED : MF_CHECKED);
+		CheckMenuItem(hUtilMenu, ID_AUTO_FOCUS_CHAT_ENTRY,
+			autoFocusChatEntry ? MF_CHECKED : MF_UNCHECKED);
 	}
 
 	void updateLayoutMenu()
@@ -314,15 +314,10 @@ namespace SUP
 		return result;
 	}
 
-	void chatFormatChanged()
+	void autoFocusChatEntryChanged()
 	{
-		WritePrivateProfileString(L"config", L"enableChatFormat",
-			std::to_wstring(enableChatFormat ? 1 : 0).c_str(), iniPath.c_str());
-
-		std::wstring cmd = L"/setupkey *Lib/Conversation/EnableWiki ";
-		cmd += enableChatFormat ? L'1' : L'0';
-
-		commandHandler.queueCommand(cmd, L"changeChatFormat", true);
+		WritePrivateProfileString(L"config", L"autoFocusChatEntry",
+			std::to_wstring(autoFocusChatEntry ? 1 : 0).c_str(), iniPath.c_str());
 	}
 
 	void hideAdsChanged()
@@ -543,12 +538,12 @@ namespace SUP
 
 				return r;
 			}
-			if (_wParam == ID_ENABLE_CHAT_FORMAT)
+			if (_wParam == ID_AUTO_FOCUS_CHAT_ENTRY)
 			{
-				enableChatFormat = !enableChatFormat;
-				chatFormatChanged();
+				autoFocusChatEntry = !autoFocusChatEntry;
+				autoFocusChatEntryChanged();
 			}
-			else if (_wParam == ID_HIDE_ADS)
+			if (_wParam == ID_HIDE_ADS)
 			{
 				hideAds = !hideAds;
 				hideAdsChanged();
@@ -659,6 +654,9 @@ namespace SUP
 			if (className == CLS_CHAT_RICH_EDIT)
 			{
 				commandHandler.executePendingCommands(_hwnd);
+
+				if (autoFocusChatEntry)
+					SetFocus(_hwnd);
 			}
 			else if (!allowHideIdentityPanel && className == CLS_MAIN_FORM)
 			{
@@ -728,7 +726,7 @@ namespace SUP
 			iniPath = std::wstring(buffer) + L"\\sup.ini";
 		}
 
-		enableChatFormat = GetPrivateProfileInt(L"config", L"enableChatFormat", 1,
+		autoFocusChatEntry = GetPrivateProfileInt(L"config", L"autoFocusChatEntry", 0,
 			iniPath.c_str()) != 0;
 		hideAds = GetPrivateProfileInt(L"config", L"hideAds", 0,
 			iniPath.c_str()) != 0;
@@ -756,11 +754,6 @@ namespace SUP
 		commandHandler.setMainForm(hWnd);
 
 		hideAdsChanged();
-
-		// At Skype startup value of Lib/Conversation/EnableWiki is 1,
-		// so no need to update if user has disabled "Disable Chat Formatting" option
-		if (!enableChatFormat)
-			chatFormatChanged();
 
 		MSG msg;
 		while (GetMessage(&msg, NULL, 0, 0))
