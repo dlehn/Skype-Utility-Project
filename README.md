@@ -12,7 +12,6 @@ The Skype Utility Project is a plugin for *Skype for Windows Desktop*, adding so
 ## What can it do?
 
 The most notable features are:
-- Enable/disable text formatting: The latest Skype version started automatically formatting sent messages based on some special characters (e.g. \*bold\* or ~strike~) which annoyed a lot of people (including us). You can now turn that off permanently with just one click!
 - Change notification window positioning: Notification window positioning now works smoothly with multiple connected displays. You can, of course, also choose on which display and where on that display your notification windows are supposed to appear.
 - Hide Ads: Hide the advertisement banners above conversations. This will not affect Ads on the Skype "Home" page.
 
@@ -42,7 +41,7 @@ And that's everything you need to know!
 ## What do those options do?
 
 Below is a detailed list of descriptions of the individual menu items, grouped according to their locations in the `SUP` menu.
-- **Disable Chat Formatting**: When selected, special characters will no longer be used to format text (e.g. \*bold\* or ~strike~) but will appear as normal characters.
+- **Auto Focus Chat Input**: When selecting a contact from the contact list or returning focus to an existing chat window, the chat input field will automatically be highlighted so you can start typing right away.
 - **Layout**: Provides options to customize Skype's window layout.
   - **Hide Ads**: Hides/shows the banner ads above chat conversations. Does not apply to ads displayed on the "Home" page.
   - **Hide Home Toolbar**: Hides/shows the panel containing the "Home" and "Call phones" buttons.
