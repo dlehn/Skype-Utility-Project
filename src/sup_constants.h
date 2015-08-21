@@ -49,6 +49,6 @@ namespace SUP
 #define TIMER_ID_VIEW_CHANGED		4200
 
 // Version String
-#define SUP_VERSION					L"1.4.0"
+#define SUP_VERSION					L"1.4.1"
 
 #endif
