@@ -64,6 +64,17 @@ These values are:
 
 Note that in order to apply changes to these values, you will have to restart Skype.
 
+## Troubleshooting
+
+It's not working, what should I do?
+- If the program is complaining about some missing .dll files, install [this](http://www.microsoft.com/en-us/download/details.aspx?id=40784).
+- SUP menu doesn't show up? Make sure the `d3d9.dll` file is located in the same folder as the `Skype.exe` file.  
+Also, if you're using Skype's "Split Window View", please be aware that the SUP menu will *only* show up in the "Tools" menu of the contact list window, not that of individual chat windows.
+- Make sure you got the latest SUP version from [here](https://github.com/dlehn/Skype-Utility-Project/releases/latest).
+- Make sure you have the latest Skype version by downloading the setup from [here](http://www.skype.com/en/download-skype/skype-for-computer/).  
+**NOTE**: You have to download the setup from the website, using `Help -> Check for Updates` from the Skype menu will *not* always give you the latest version. (Skype distributes updates to people over time, presumably to reduce server loads and to give them some time to react in case of some catastrophic bug. This means that using the update check may give you access to a new version only one or two weeks after its initial release, while the setup downloaded from the website will always contain the latest version.)
+- Still doesn't work? Open a new issue [here](https://github.com/dlehn/Skype-Utility-Project/issues) with a detailed description of your problem.
+
 ## Who did it?
 
 This project is a combined effort of [David Lehn](http://blog.mountain-view.de "Portfolio"), [Moritz Kretz](http://kretzmoritz.wordpress.com/ "Portfolio") and [NDS](https://github.com/nestdimon).  
